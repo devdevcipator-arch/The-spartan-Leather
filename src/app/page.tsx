@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import SpecialtiesSection from "@/components/SpecialtiesSection";
+import WhyPartnerSection from "@/components/WhyPartnerSection";
 import SectionReveal from "@/components/ui/SectionReveal";
 
 export default function Home() {
@@ -16,10 +17,15 @@ export default function Home() {
         <SectionReveal withDivider={true}>
           <SpecialtiesSection />
         </SectionReveal>
+
+        <SectionReveal withDivider={true}>
+          <WhyPartnerSection />
+        </SectionReveal>
       </main>
     </div>
   );
 }
+
 
 
 
