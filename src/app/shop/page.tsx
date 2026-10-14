@@ -5,7 +5,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SectionReveal from "@/components/ui/SectionReveal";
-import { Search, ChevronDown, Check } from "lucide-react";
+import { Search, ChevronDown, ChevronLeft, ChevronRight, Check } from "lucide-react";
 
 interface Product {
   id: string;
@@ -21,6 +21,74 @@ export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Horizontal scroll & drag controls
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftState, setScrollLeftState] = useState(0);
+  const [hasDragged, setHasDragged] = useState(false);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 4);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 4);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+
+    const timer = setTimeout(checkScroll, 120);
+
+    return () => {
+      clearTimeout(timer);
+      container.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, []);
+
+  const scrollByAmount = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const amount = direction === "left" ? -240 : 240;
+      scrollContainerRef.current.scrollBy({
+        left: amount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setHasDragged(false);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeftState(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    if (Math.abs(x - startX) > 6) {
+      setHasDragged(true);
+    }
+    scrollContainerRef.current.scrollLeft = scrollLeftState - walk;
+    checkScroll();
+  };
+
+  const handleMouseUpOrLeave = () => {
+    setIsDragging(false);
+  };
 
   const primaryCategories = [
     "All",
@@ -172,91 +240,155 @@ export default function ShopPage() {
             <div className="w-14 sm:w-16 h-[2.5px] bg-[#C29B38] mx-auto mt-3.5 shadow-[0_0_10px_rgba(194,155,56,0.5)]" />
           </div>
 
-          {/* Filter Pills Enclosure & Search Bar Container matching screenshot */}
+          {/* Filter Pills Enclosure & Search Bar Container with Smooth Edge Fades & Chevrons */}
           <div className="flex flex-col xl:flex-row items-center justify-between gap-4 mb-10 sm:mb-14 w-full">
-            {/* Outer Continuous Pill Capsule Enclosure */}
-            <div className="w-full xl:w-auto overflow-x-auto no-scrollbar py-1">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)]">
-                {/* Primary Category Pills */}
-                {primaryCategories.map((category) => {
-                  const isActive = selectedCategory === category;
-                  return (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(category);
-                        setDropdownOpen(false);
-                      }}
-                      className={`whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
-                        isActive
-                          ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
-                          : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  );
-                })}
+            {/* Category Scroll Section with Left/Right Controls and Smooth Edge Fades */}
+            <div className="w-full xl:w-auto flex items-center gap-1.5 sm:gap-2">
+              {/* Left Chevron Button (Subtle ‹ Control) */}
+              <button
+                type="button"
+                onClick={() => scrollByAmount("left")}
+                disabled={!canScrollLeft}
+                aria-label="Scroll categories left"
+                className={`flex-shrink-0 w-8 h-8 rounded-full border border-[#7A5C22]/50 bg-[#141312] text-[#E0C681] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md hover:bg-[#C29B38] hover:text-[#121110] hover:border-[#E0C681] ${
+                  canScrollLeft
+                    ? "opacity-100 hover:scale-105"
+                    : "opacity-20 cursor-not-allowed pointer-events-none"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
 
-                {/* Dropdown for More Categories */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className={`whitespace-nowrap flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
-                      isMoreCategorySelected
-                        ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
-                        : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
-                    }`}
-                  >
-                    <span>
-                      {isMoreCategorySelected ? selectedCategory : "More Categories"}
-                    </span>
-                    <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                        dropdownOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+              {/* Relative Wrapper with Smooth Fading Gradients */}
+              <div className="relative overflow-hidden flex-1 xl:flex-initial">
+                {/* Left Edge Fading Gradient */}
+                <div
+                  className={`absolute left-0 top-0 bottom-0 w-8 sm:w-12 pointer-events-none z-10 transition-opacity duration-300 bg-gradient-to-r from-[#0B0B0B] to-transparent ${
+                    canScrollLeft ? "opacity-100" : "opacity-0"
+                  }`}
+                />
 
-                  {/* Dropdown Menu */}
-                  {dropdownOpen && (
-                    <div className="absolute right-0 top-full mt-2.5 w-60 rounded-xl border border-[#7A5C22]/60 bg-[#151413] py-2 shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-40 backdrop-blur-md">
-                      <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38] border-b border-[#7A5C22]/20 mb-1">
-                        More Categories
-                      </div>
-                      {moreCategories.map((category) => {
-                        const isSelected = selectedCategory === category;
-                        return (
-                          <button
-                            key={category}
-                            type="button"
-                            onClick={() => {
-                              setSelectedCategory(category);
-                              setDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-[13px] text-left transition-colors cursor-pointer ${
-                              isSelected
-                                ? "text-[#E0C681] bg-[#1E1C1B] font-medium"
-                                : "text-[#E5DFD3]/80 hover:text-[#E0C681] hover:bg-[#1A1918]"
-                            }`}
-                          >
-                            <span>{category}</span>
-                            {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#C29B38]" />
-                            )}
-                          </button>
-                        );
-                      })}
+                {/* Right Edge Fading Gradient */}
+                <div
+                  className={`absolute right-0 top-0 bottom-0 w-8 sm:w-12 pointer-events-none z-10 transition-opacity duration-300 bg-gradient-to-l from-[#0B0B0B] to-transparent ${
+                    canScrollRight ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+
+                {/* Scrollable Track (Hidden Scrollbar, Touch/Wheel/Drag Active) */}
+                <div
+                  ref={scrollContainerRef}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUpOrLeave}
+                  onMouseLeave={handleMouseUpOrLeave}
+                  className={`overflow-x-auto no-scrollbar py-1 select-none ${
+                    isDragging ? "cursor-grabbing" : "cursor-grab"
+                  }`}
+                >
+                  {/* Outer Continuous Pill Capsule Enclosure */}
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)]">
+                    {/* Primary Category Pills */}
+                    {primaryCategories.map((category) => {
+                      const isActive = selectedCategory === category;
+                      return (
+                        <button
+                          key={category}
+                          type="button"
+                          onClick={() => {
+                            if (hasDragged) return;
+                            setSelectedCategory(category);
+                            setDropdownOpen(false);
+                          }}
+                          className={`whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                            isActive
+                              ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                              : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      );
+                    })}
+
+                    {/* Dropdown for More Categories */}
+                    <div className="relative" ref={dropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (hasDragged) return;
+                          setDropdownOpen(!dropdownOpen);
+                        }}
+                        className={`whitespace-nowrap flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                          isMoreCategorySelected
+                            ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                            : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
+                        }`}
+                      >
+                        <span>
+                          {isMoreCategorySelected ? selectedCategory : "More Categories"}
+                        </span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            dropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {/* Dropdown Menu */}
+                      {dropdownOpen && (
+                        <div className="absolute right-0 top-full mt-2.5 w-60 rounded-xl border border-[#7A5C22]/60 bg-[#151413] py-2 shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-40 backdrop-blur-md">
+                          <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38] border-b border-[#7A5C22]/20 mb-1">
+                            More Categories
+                          </div>
+                          {moreCategories.map((category) => {
+                            const isSelected = selectedCategory === category;
+                            return (
+                              <button
+                                key={category}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedCategory(category);
+                                  setDropdownOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-[13px] text-left transition-colors cursor-pointer ${
+                                  isSelected
+                                    ? "text-[#E0C681] bg-[#1E1C1B] font-medium"
+                                    : "text-[#E5DFD3]/80 hover:text-[#E0C681] hover:bg-[#1A1918]"
+                                }`}
+                              >
+                                <span>{category}</span>
+                                {isSelected && (
+                                  <Check className="w-3.5 h-3.5 text-[#C29B38]" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
+
+              {/* Right Chevron Button (Subtle › Control) */}
+              <button
+                type="button"
+                onClick={() => scrollByAmount("right")}
+                disabled={!canScrollRight}
+                aria-label="Scroll categories right"
+                className={`flex-shrink-0 w-8 h-8 rounded-full border border-[#7A5C22]/50 bg-[#141312] text-[#E0C681] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md hover:bg-[#C29B38] hover:text-[#121110] hover:border-[#E0C681] ${
+                  canScrollRight
+                    ? "opacity-100 hover:scale-105"
+                    : "opacity-20 cursor-not-allowed pointer-events-none"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
 
             {/* Matching Search Capsule */}
-            <div className="w-full xl:w-auto flex justify-start xl:justify-end">
+            <div className="w-full xl:w-auto flex justify-start xl:justify-end flex-shrink-0">
               <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full sm:w-72 md:w-80">
                 <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
                 <input

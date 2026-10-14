@@ -107,3 +107,34 @@ body {
     transition: none !important;
   }
 }
+
+/* Hide scrollbar utility across Chrome, Safari, Edge, Firefox */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Luxury ultra-thin (2-3px) gold scrollbar */
+.custom-gold-scrollbar::-webkit-scrollbar {
+  height: 3px;
+  width: 3px;
+}
+.custom-gold-scrollbar::-webkit-scrollbar-track {
+  background: #141312;
+  border-radius: 9999px;
+}
+.custom-gold-scrollbar::-webkit-scrollbar-thumb {
+  background: #7A5C22;
+  border-radius: 9999px;
+}
+.custom-gold-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #C29B38;
+}
+.custom-gold-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #7A5C22 #141312;
+}
+
