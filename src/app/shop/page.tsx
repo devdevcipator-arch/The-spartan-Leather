@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SectionReveal from "@/components/ui/SectionReveal";
-import { Search } from "lucide-react";
+import { Search, ChevronDown, Check } from "lucide-react";
 
 interface Product {
   id: string;
@@ -19,8 +19,10 @@ interface Product {
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const categories = [
+  const primaryCategories = [
     "All",
     "Leather Jackets",
     "Leather Gloves",
@@ -29,6 +31,29 @@ export default function ShopPage() {
     "Leather Belts",
     "Leather Aprons",
   ];
+
+  const moreCategories = [
+    "Equestrian & Saddlery",
+    "Vests & Armor",
+    "Small Accessories",
+    "Custom Gear",
+  ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const products: Product[] = [
     {
@@ -50,6 +75,15 @@ export default function ShopPage() {
       image: "/images/shop/duffle.jpg",
     },
     {
+      id: "centurion-saddle-leather-belt",
+      name: "CENTURION SADDLE BELT",
+      category: "Leather Belts",
+      badge: "LIMITED EDITION",
+      description:
+        "Full-grain vegetable-tanned steerhide fitted with an antiqued solid brass Spartan crest buckle.",
+      image: "/images/shop/belt.jpg",
+    },
+    {
       id: "craftsman-armor-apron",
       name: "CRAFTSMAN ARMOR APRON",
       category: "Leather Aprons",
@@ -60,7 +94,7 @@ export default function ShopPage() {
     {
       id: "royal-equestrian-saddle",
       name: "ROYAL EQUESTRIAN SADDLE",
-      category: "All",
+      category: "Equestrian & Saddlery",
       description:
         "Engineered for comfort and control. The pinnacle of horse riding equipment.",
       image: "/images/shop/saddle.jpg",
@@ -81,14 +115,30 @@ export default function ShopPage() {
         "Double-reinforced palms and heat-resistant thread for extreme durability.",
       image: "/images/shop/gloves.jpg",
     },
+    {
+      id: "ares-tactical-vest",
+      name: "ARES REINFORCED VEST",
+      category: "Vests & Armor",
+      description:
+        "Heavy-gauge tactical cowhide vest with reinforced dual-stitch panels and concealed carry pockets.",
+      image: "/images/shop/jacket.jpg",
+    },
+    {
+      id: "artisan-spartan-tool-roll",
+      name: "SPARTAN ARTISAN ROLL",
+      category: "Small Accessories",
+      description:
+        "Dedicated full-grain roll-up tool case engineered for master craftsmen, mechanics, and barbers.",
+      image: "/images/shop/wallet.jpg",
+    },
   ];
+
+  const isMoreCategorySelected = moreCategories.includes(selectedCategory);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesCategory =
-        selectedCategory === "All" ||
-        product.category === selectedCategory ||
-        (selectedCategory === "Leather Belts" && product.name.includes("BELT"));
+        selectedCategory === "All" || product.category === selectedCategory;
 
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -122,41 +172,113 @@ export default function ShopPage() {
             <div className="w-14 sm:w-16 h-[2.5px] bg-[#C29B38] mx-auto mt-3.5 shadow-[0_0_10px_rgba(194,155,56,0.5)]" />
           </div>
 
-          {/* Filter Pills and Search Bar Container */}
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-5 mb-10 sm:mb-14">
-            {/* Category Pills */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-2.5">
-              {categories.map((category) => {
-                const isActive = selectedCategory === category;
-                return (
+          {/* Filter Pills Enclosure & Search Bar Container matching screenshot */}
+          <div className="flex flex-col xl:flex-row items-center justify-between gap-4 mb-10 sm:mb-14 w-full">
+            {/* Outer Continuous Pill Capsule Enclosure */}
+            <div className="w-full xl:w-auto overflow-x-auto no-scrollbar py-1">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)]">
+                {/* Primary Category Pills */}
+                {primaryCategories.map((category) => {
+                  const isActive = selectedCategory === category;
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setDropdownOpen(false);
+                      }}
+                      className={`whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                        isActive
+                          ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                          : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  );
+                })}
+
+                {/* Dropdown for More Categories */}
+                <div className="relative" ref={dropdownRef}>
                   <button
-                    key={category}
                     type="button"
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-xs uppercase tracking-[0.14em] transition-all duration-200 cursor-pointer ${
-                      isActive
-                        ? "bg-[#C29B38] text-[#141312] font-bold shadow-[0_0_12px_rgba(194,155,56,0.35)]"
-                        : "border border-[#7A5C22]/40 bg-[#141312]/70 text-[#E5DFD3]/80 hover:border-[#E0C681] hover:text-[#E0C681]"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className={`whitespace-nowrap flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                      isMoreCategorySelected
+                        ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                        : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
                     }`}
                   >
-                    {category}
+                    <span>
+                      {isMoreCategorySelected ? selectedCategory : "More Categories"}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        dropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
-                );
-              })}
+
+                  {/* Dropdown Menu */}
+                  {dropdownOpen && (
+                    <div className="absolute right-0 top-full mt-2.5 w-60 rounded-xl border border-[#7A5C22]/60 bg-[#151413] py-2 shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-40 backdrop-blur-md">
+                      <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38] border-b border-[#7A5C22]/20 mb-1">
+                        More Categories
+                      </div>
+                      {moreCategories.map((category) => {
+                        const isSelected = selectedCategory === category;
+                        return (
+                          <button
+                            key={category}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setDropdownOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-[13px] text-left transition-colors cursor-pointer ${
+                              isSelected
+                                ? "text-[#E0C681] bg-[#1E1C1B] font-medium"
+                                : "text-[#E5DFD3]/80 hover:text-[#E0C681] hover:bg-[#1A1918]"
+                            }`}
+                          >
+                            <span>{category}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[#C29B38]" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            {/* Search Input */}
-            <div className="relative w-full sm:w-72 lg:w-80">
-              <input
-                type="text"
-                placeholder="Search collection..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#141312] border border-[#2B2A28] rounded-full pl-10 pr-4 py-2 text-xs text-[#E5DFD3] placeholder-[#E5DFD3]/40 focus:outline-none focus:border-[#C29B38] transition-colors"
-              />
-              <Search className="w-4 h-4 text-[#E5DFD3]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            {/* Matching Search Capsule */}
+            <div className="w-full xl:w-auto flex justify-start xl:justify-end">
+              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full sm:w-72 md:w-80">
+                <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
+                <input
+                  type="text"
+                  placeholder="Search collection..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent text-xs sm:text-[13px] text-[#E5DFD3] placeholder-[#E5DFD3]/40 focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="text-[#E5DFD3]/50 hover:text-[#E0C681] text-xs px-1"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
           </div>
+
 
           {/* Product Grid (3 Columns) */}
           {filteredProducts.length === 0 ? (
