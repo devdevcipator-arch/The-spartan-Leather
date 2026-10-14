@@ -28,12 +28,13 @@ export default function PartnerCtaSection({
           className="object-cover object-center select-none"
         />
         {/* Deep Dark Overlay to achieve screenshot's moody luxury ambiance */}
-        <div className="absolute inset-0 bg-[#0B0B0B]/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-[#0B0B0B]/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0B] via-transparent to-[#0B0B0B]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0B]/40 via-transparent to-[#0B0B0B]/40" />
       </div>
 
       {/* Central Floating Callout Card */}
-      <div className="relative z-10 max-w-4xl mx-auto border border-[#7A5C22]/60 bg-[#161514]/92 backdrop-blur-md px-6 py-12 sm:px-14 sm:py-16 text-center shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+      <div className="relative z-10 max-w-4xl mx-auto border border-[#7A5C22]/70 bg-[#161514]/95 px-6 py-12 sm:px-14 sm:py-16 text-center shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
         {/* Main Headline */}
         <h2 className="font-serif text-2xl sm:text-3xl lg:text-[36px] font-bold uppercase tracking-[0.06em] text-[#E0C681] leading-tight sm:leading-[1.25]">
           Partner With The Best In Leather <br className="hidden sm:inline" />
