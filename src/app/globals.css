@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0B0B0B;
+  --foreground: #E5DFD3;
+  
+  /* Spartan Leather Custom Palette */
+  --gold-metallic: #C29B38;
+  --gold-light: #E0C681;
+  --gold-bronze: #7A5C22;
+  --leather-charcoal: #1A1918;
+  --obsidian-black: #0B0B0B;
+  --muted-ivory: #E5DFD3;
+  --ash-gray: #2B2A28;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  
+  --color-gold: #C29B38;
+  --color-gold-light: #E0C681;
+  --color-gold-bronze: #7A5C22;
+  --color-leather-charcoal: #1A1918;
+  --color-obsidian: #0B0B0B;
+  --color-ivory: #E5DFD3;
+  --color-ash: #2B2A28;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-cinzel), serif;
+  --font-serif-italic: var(--font-cormorant), serif;
+  --font-sans: var(--font-montserrat), sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Spartan Signature Uniform Button Animation */
+.btn-spartan {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              background 0.3s ease, 
+              border-color 0.3s ease;
+}
+
+.btn-spartan::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.btn-spartan:hover::after {
+  left: 160%;
+}
+
+.btn-spartan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(194, 155, 56, 0.42);
+}
+
+.btn-spartan:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 4px 14px rgba(194, 155, 56, 0.25);
+}
+
+/* Spartan Signature Uniform Section Reveal & Transition Animation */
+.spartan-section-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.spartan-section-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spartan-section-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
