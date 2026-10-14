@@ -57,7 +57,7 @@ export default function WhyPartnerSection() {
   ];
 
   return (
-    <div className="w-full px-6 sm:px-8 md:px-[48px] py-20 sm:py-28 bg-[#0B0B0B]">
+    <div className="w-full px-6 sm:px-8 md:px-[48px] py-20 sm:py-28 bg-[#1A1918]">
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
         <span className="text-xs uppercase tracking-[0.28em] text-[#C29B38] font-semibold">
@@ -78,7 +78,7 @@ export default function WhyPartnerSection() {
               className="group flex flex-col items-center text-center select-none"
             >
               {/* Circular Icon Emblem */}
-              <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full border border-[#7A5C22]/60 bg-[#141312] flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-[#E0C681] group-hover:shadow-[0_0_25px_rgba(224,198,129,0.22)]">
+              <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full border border-[#7A5C22]/60 bg-[#0B0B0B] flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-[#E0C681] group-hover:shadow-[0_0_25px_rgba(224,198,129,0.22)]">
                 <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-[#E0C681] transition-transform duration-300 group-hover:scale-110" />
               </div>
 
