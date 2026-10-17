@@ -170,10 +170,10 @@ export default function ShopPage() {
           </div>
 
           {/* Filter Pills Enclosure & Search Bar Container (Strictly bounded within page) */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10 sm:mb-14 w-full max-w-full">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10 sm:mb-14 w-full max-w-full relative z-30">
             {/* 3 Displayed Categories + More Categories Dropdown Capsule */}
-            <div className="w-full md:w-auto overflow-x-auto no-scrollbar py-1">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] max-w-full">
+            <div className="w-full md:w-auto py-1 relative z-30 overflow-visible">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] max-w-full overflow-visible">
                 {/* 3 Displayed Category Pills */}
                 {displayedCategories.map((category) => {
                   const isActive = selectedCategory === category;
@@ -219,7 +219,7 @@ export default function ShopPage() {
 
                   {/* Dropdown Menu of Remaining Categories with Fluid Animation */}
                   {dropdownOpen && (
-                    <div className="animate-spartan-dropdown absolute left-0 sm:left-auto sm:right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312]/95 py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
+                    <div className="animate-spartan-dropdown absolute right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312] py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
                       <div className="px-3 py-1.5 flex items-center justify-between border-b border-[#7A5C22]/25 mb-1">
                         <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38]">
                           More Categories
