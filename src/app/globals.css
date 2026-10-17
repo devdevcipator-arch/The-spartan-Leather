@@ -138,3 +138,35 @@ body {
   scrollbar-color: #7A5C22 #141312;
 }
 
+/* Spartan Category Dropdown & Staggered Micro Animations */
+@keyframes spartanDropdownEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spartanItemStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) translateX(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+.animate-spartan-dropdown {
+  animation: spartanDropdownEnter 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top;
+}
+
+.animate-spartan-item {
+  animation: spartanItemStagger 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+

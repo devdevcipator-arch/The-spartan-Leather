@@ -33,12 +33,7 @@ export default function ShopPage() {
   const remainingCategories = [
     "Leather Bags",
     "Leather Wallets",
-    "Leather Belts",
     "Leather Aprons",
-    "Equestrian & Saddlery",
-    "Vests & Armor",
-    "Small Accessories",
-    "Custom Gear",
   ];
 
   // Close dropdown when clicking outside
@@ -222,35 +217,43 @@ export default function ShopPage() {
                     />
                   </button>
 
-                  {/* Dropdown Menu of Remaining Categories */}
+                  {/* Dropdown Menu of Remaining Categories with Fluid Animation */}
                   {dropdownOpen && (
-                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2.5 w-60 max-w-[calc(100vw-3rem)] rounded-xl border border-[#7A5C22]/60 bg-[#151413] py-2 shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-50 backdrop-blur-md max-h-72 overflow-y-auto no-scrollbar">
-                      <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38] border-b border-[#7A5C22]/20 mb-1">
-                        All Categories
+                    <div className="animate-spartan-dropdown absolute left-0 sm:left-auto sm:right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312]/95 py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
+                      <div className="px-3 py-1.5 flex items-center justify-between border-b border-[#7A5C22]/25 mb-1">
+                        <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38]">
+                          More Categories
+                        </span>
+                        <span className="text-[9px] uppercase tracking-[0.1em] text-[#E5DFD3]/40 font-mono">
+                          3 Items
+                        </span>
                       </div>
-                      {remainingCategories.map((category) => {
-                        const isSelected = selectedCategory === category;
-                        return (
-                          <button
-                            key={category}
-                            type="button"
-                            onClick={() => {
-                              setSelectedCategory(category);
-                              setDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-[13px] text-left transition-colors cursor-pointer ${
-                              isSelected
-                                ? "text-[#E0C681] bg-[#1E1C1B] font-medium"
-                                : "text-[#E5DFD3]/80 hover:text-[#E0C681] hover:bg-[#1A1918]"
-                            }`}
-                          >
-                            <span>{category}</span>
-                            {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#C29B38]" />
-                            )}
-                          </button>
-                        );
-                      })}
+                      <div className="space-y-1">
+                        {remainingCategories.map((category, idx) => {
+                          const isSelected = selectedCategory === category;
+                          return (
+                            <button
+                              key={category}
+                              type="button"
+                              style={{ animationDelay: `${idx * 60 + 30}ms` }}
+                              onClick={() => {
+                                setSelectedCategory(category);
+                                setDropdownOpen(false);
+                              }}
+                              className={`animate-spartan-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-[13px] text-left transition-all duration-200 cursor-pointer ${
+                                isSelected
+                                  ? "text-[#E0C681] bg-[#1E1C1B] font-semibold border border-[#C29B38]/40 shadow-[0_0_12px_rgba(194,155,56,0.2)]"
+                                  : "text-[#E5DFD3]/85 hover:text-[#E0C681] hover:bg-[#1A1918] hover:translate-x-1"
+                              }`}
+                            >
+                              <span className="tracking-wide">{category}</span>
+                              {isSelected && (
+                                <Check className="w-3.5 h-3.5 text-[#C29B38]" />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
