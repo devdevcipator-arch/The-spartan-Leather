@@ -169,33 +169,10 @@ export default function ShopPage() {
             <div className="w-14 sm:w-16 h-[2.5px] bg-[#C29B38] mx-auto mt-3.5 shadow-[0_0_10px_rgba(194,155,56,0.5)]" />
           </div>
 
-          {/* Filter Pills Enclosure & Search Bar Container (Search Bar stretched to Categories) */}
+          {/* Filter Pills Enclosure & Search Bar Container (Categories on Left, Search Bar on Right) */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 sm:gap-6 mb-10 sm:mb-14 w-full max-w-full relative z-30">
-            {/* Matching Search Capsule (Stretched Left side) */}
-            <div className="w-full md:flex-1 flex justify-start min-w-0">
-              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full">
-                <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
-                <input
-                  type="text"
-                  placeholder="Search collection..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full min-w-0 bg-transparent text-xs sm:text-[13px] text-[#E5DFD3] placeholder-[#E5DFD3]/40 focus:outline-none"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="text-[#E5DFD3]/50 hover:text-[#E0C681] text-xs px-1 cursor-pointer"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* 3 Displayed Categories + More Categories Dropdown Capsule (Right side) */}
-            <div className="w-full md:w-auto flex-shrink-0 flex justify-start md:justify-end py-1 relative z-30 overflow-visible">
+            {/* 3 Displayed Categories + More Categories Dropdown Capsule (Left side) */}
+            <div className="w-full md:w-auto flex-shrink-0 flex justify-start py-1 relative z-30 overflow-visible">
               <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] max-w-full overflow-visible">
                 {/* 3 Displayed Category Pills */}
                 {displayedCategories.map((category) => {
@@ -242,7 +219,7 @@ export default function ShopPage() {
 
                   {/* Dropdown Menu of Remaining Categories with Fluid Animation */}
                   {dropdownOpen && (
-                    <div className="animate-spartan-dropdown absolute right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312] py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
+                    <div className="animate-spartan-dropdown absolute left-0 sm:left-auto sm:right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312] py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
                       <div className="px-3 py-1.5 flex items-center justify-between border-b border-[#7A5C22]/25 mb-1">
                         <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38]">
                           More Categories
@@ -280,6 +257,29 @@ export default function ShopPage() {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+
+            {/* Matching Search Capsule (Right side, stretched) */}
+            <div className="w-full md:flex-1 flex justify-start md:justify-end min-w-0">
+              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full">
+                <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
+                <input
+                  type="text"
+                  placeholder="Search collection..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full min-w-0 bg-transparent text-xs sm:text-[13px] text-[#E5DFD3] placeholder-[#E5DFD3]/40 focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="text-[#E5DFD3]/50 hover:text-[#E0C681] text-xs px-1 cursor-pointer"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
           </div>
