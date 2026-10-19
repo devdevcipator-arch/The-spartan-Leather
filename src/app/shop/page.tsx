@@ -356,71 +356,80 @@ export default function ShopPage() {
           )}
 
           {/* Bulk Orders & B2B Partnerships Banner */}
-          <div className="relative overflow-hidden border border-[#7A5C22]/40 bg-[#141312] p-8 sm:p-12 lg:p-14 mt-16 sm:mt-24 shadow-2xl">
+          <div className="relative overflow-hidden rounded-2xl md:rounded-[22px] border border-[#7A5C22]/35 bg-[#0C0B0A] px-6 py-10 sm:px-10 sm:py-12 md:px-12 md:py-14 lg:px-14 lg:py-14 mt-16 sm:mt-24 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
             {/* Background Image & Gradient */}
             <div className="absolute inset-0 z-0">
               <Image
                 src="/images/shop/b2b-bg.jpg"
-                alt="Leather Manufacturing Factory"
+                alt="Bulk Orders and B2B Leather Manufacturing"
                 fill
+                priority
                 sizes="100vw"
                 className="object-cover object-center select-none"
               />
-              <div className="absolute inset-0 bg-[#0B0B0B]/85 backdrop-blur-[1px]" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0B] via-[#0B0B0B]/80 to-transparent" />
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-[0.5px]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/80" />
             </div>
 
             {/* Banner Content Grid */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
               {/* Left Column: Headline, Copy & WhatsApp CTA */}
-              <div className="lg:col-span-7 space-y-5">
-                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-[0.06em] text-[#E0C681] leading-tight">
+              <div className="lg:col-span-8 flex flex-col items-start text-left">
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] font-normal uppercase tracking-[0.08em] sm:tracking-[0.1em] text-[#CCA855] leading-tight sm:leading-snug">
                   Bulk Orders & B2B <br />
                   Partnerships
                 </h2>
 
-                <p className="max-w-xl text-xs sm:text-sm text-[#E5DFD3]/80 leading-relaxed font-light">
+                <p className="max-w-xl text-xs sm:text-[13px] md:text-sm text-[#A8A49C] leading-relaxed font-light mt-3 sm:mt-4">
                   Looking to stock Spartan Leather or need a custom fleet of
                   equipment for your business? We offer exclusive wholesale
                   pricing and custom branding.
                 </p>
 
-                <div className="pt-2">
+                <div className="mt-6 sm:mt-8">
                   <a
                     href={b2bWhatsAppUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-spartan inline-flex items-center justify-center gap-2.5 px-8 py-3.5 sm:px-9 sm:py-4 rounded-md bg-[#25D366] text-white font-bold text-xs sm:text-[13px] uppercase tracking-[0.18em] shadow-[0_8px_25px_rgba(37,211,102,0.3)] hover:bg-[#20bd5a] hover:shadow-[0_12px_32px_rgba(37,211,102,0.45)]"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 rounded-lg sm:rounded-xl bg-[#25D366] text-white font-bold text-xs sm:text-[13px] uppercase tracking-wide shadow-[0_6px_22px_rgba(37,211,102,0.32)] hover:bg-[#20ba59] hover:shadow-[0_8px_28px_rgba(37,211,102,0.48)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
                   >
                     <svg
-                      className="w-5 h-5 fill-current"
+                      className="w-5 h-5 fill-current flex-shrink-0"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.54 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44s-.56-1.36-.77-1.86c-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29" />
                     </svg>
-                    <span>Inquire via WhatsApp</span>
+                    <span>INQUIRE VIA WHATSAPP</span>
                   </a>
                 </div>
               </div>
 
-              {/* Right Column: Statistics */}
-              <div className="lg:col-span-5 flex flex-row lg:flex-col justify-around lg:justify-center items-start lg:items-end gap-6 sm:gap-8 border-t lg:border-t-0 lg:border-l border-[#7A5C22]/30 pt-6 lg:pt-0 lg:pl-10">
-                <div className="text-left lg:text-right">
-                  <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#E0C681]">
-                    500+
-                  </div>
-                  <div className="text-[10px] sm:text-xs uppercase tracking-[0.24em] text-[#E5DFD3]/70 font-medium mt-1">
-                    Corporate Clients
-                  </div>
-                </div>
+              {/* Right Column: Statistics with Vertical Gold Accent Bar */}
+              <div className="lg:col-span-4 flex items-center lg:justify-end pt-6 lg:pt-0 border-t border-[#7A5C22]/30 lg:border-t-0">
+                <div className="flex items-center gap-5 sm:gap-6">
+                  {/* Slender Vertical Gold Divider Line */}
+                  <div className="w-[1.5px] h-[105px] sm:h-[120px] bg-gradient-to-b from-[#C29B38]/30 via-[#C29B38] to-[#C29B38]/30 flex-shrink-0" />
 
-                <div className="text-left lg:text-right">
-                  <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#E0C681]">
-                    100%
-                  </div>
-                  <div className="text-[10px] sm:text-xs uppercase tracking-[0.24em] text-[#E5DFD3]/70 font-medium mt-1">
-                    Genuine Leather
+                  {/* Two Left-Aligned Stats */}
+                  <div className="flex flex-col justify-between py-0.5 space-y-5 sm:space-y-6 text-left">
+                    <div>
+                      <div className="font-serif text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#CCA855] leading-none">
+                        500+
+                      </div>
+                      <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#8E8B85] font-medium mt-1.5">
+                        Corporate Clients
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="font-serif text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#CCA855] leading-none">
+                        100%
+                      </div>
+                      <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#8E8B85] font-medium mt-1.5">
+                        Genuine Leather
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
