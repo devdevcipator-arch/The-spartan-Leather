@@ -4,9 +4,13 @@ import React from "react";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Shield } from "lucide-react";
 
-export default function Footer() {
+interface FooterProps {
+  activePath?: string;
+}
+
+export default function Footer({ activePath = "/" }: FooterProps) {
   const quickLinks = [
-    { name: "HOME", href: "/", active: true },
+    { name: "HOME", href: "/" },
     { name: "SHOP", href: "/shop" },
     { name: "ABOUT US", href: "/about" },
     { name: "CONTACT US", href: "/contact" },
@@ -92,19 +96,22 @@ export default function Footer() {
             </h3>
 
             <nav className="flex flex-col space-y-3.5">
-              {quickLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`text-xs sm:text-[13px] uppercase tracking-[0.18em] transition-colors ${
-                    link.active
-                      ? "text-[#E0C681] font-semibold"
-                      : "text-[#E5DFD3]/75 hover:text-[#E0C681]"
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {quickLinks.map((link) => {
+                const isActive = activePath === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`text-xs sm:text-[13px] uppercase tracking-[0.18em] transition-colors ${
+                      isActive
+                        ? "text-[#E0C681] font-semibold"
+                        : "text-[#E5DFD3]/75 hover:text-[#E0C681]"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
