@@ -50,52 +50,49 @@ export default function AboutPage() {
         {/* SECTION 1: HERO - A LEGACY OF UNCOMPROMISING ARTISTRY */}
         {/* ======================================================== */}
         <SectionReveal>
-          <div className="relative w-full overflow-hidden pt-12 sm:pt-16 lg:pt-20 pb-16 sm:pb-24 lg:pb-28">
-            <div className="w-full px-6 sm:px-8 md:px-[48px] max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-                {/* Left Column: Heading, Accent & Story */}
-                <div className="lg:col-span-7 flex flex-col justify-center">
-                  {/* Subtle Gold Accent Bar */}
-                  <div className="w-12 h-[3.5px] bg-[#C29B38] mb-6 sm:mb-8 shadow-[0_0_12px_rgba(194,155,56,0.45)]" />
+          <div className="relative w-full overflow-hidden min-h-[520px] sm:min-h-[580px] lg:min-h-[640px] flex items-center py-20 sm:py-28 lg:py-32">
+            {/* Full-bleed Panoramic Leather Background */}
+            <div className="absolute inset-0 z-0">
+              <Image
+                src="/images/about/hero-leather-bg.jpg"
+                alt="Full-grain leather texture craftsmanship"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-right md:object-center select-none"
+              />
 
-                  {/* Main Headline with Serif + Italic Serif Combination */}
-                  <h1 className="text-4xl sm:text-5xl lg:text-[56px] xl:text-[62px] font-normal leading-[1.14] tracking-[0.03em] mb-6 sm:mb-8">
-                    <span className="font-serif block text-[#E5DFD3]">
-                      A Legacy of
-                    </span>
-                    <span className="font-serif-italic italic block text-[#CCA855] mt-1 sm:mt-2">
-                      Uncompromising Artistry
-                    </span>
-                  </h1>
+              {/* Seamless Dark Vignette / Gradient Overlays */}
+              {/* Deep obsidian fade on left where text sits */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0B] via-[#0B0B0B]/85 md:via-[#0B0B0B]/60 to-transparent" />
+              {/* Top & bottom subtle transitions */}
+              <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#0B0B0B] via-[#0B0B0B]/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0B0B0B] via-[#0B0B0B]/50 to-transparent pointer-events-none" />
+            </div>
 
-                  {/* Paragraph Copy */}
-                  <p className="text-xs sm:text-sm lg:text-[15px] text-[#A8A49C] leading-relaxed font-light max-w-xl">
-                    Born from the rich traditions of Pakistani leatherwork, The Spartan Leather
-                    represents the pinnacle of handcrafted excellence. We don&apos;t just
-                    manufacture goods; we preserve a heritage of durability, luxury, and
-                    meticulous precision that spans generations.
-                  </p>
-                </div>
+            {/* Content Container (Left-aligned) */}
+            <div className="relative z-10 w-full px-6 sm:px-8 md:px-[48px] max-w-7xl mx-auto">
+              <div className="max-w-2xl">
+                {/* Subtle Gold Accent Bar */}
+                <div className="w-14 h-[3.5px] bg-[#C29B38] mb-6 sm:mb-8 shadow-[0_0_12px_rgba(194,155,56,0.5)]" />
 
-                {/* Right Column: Close-up Macro Pebble Leather & Cross-Stitch Artwork */}
-                <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
-                  <div className="relative aspect-square w-full max-w-md sm:max-w-lg lg:max-w-none overflow-hidden rounded-sm shadow-2xl">
-                    <Image
-                      src="/images/about/hero-leather.jpg"
-                      alt="Full-grain leather texture with double saddle stitch"
-                      fill
-                      priority
-                      sizes="(max-width: 1024px) 100vw, 45vw"
-                      className="object-cover object-center select-none"
-                    />
+                {/* Main Headline with Serif + Italic Serif in Warm Gold */}
+                <h1 className="text-4xl sm:text-5xl lg:text-[58px] xl:text-[64px] font-normal leading-[1.12] tracking-[0.02em] mb-6 sm:mb-7">
+                  <span className="font-serif block text-[#CCA855]">
+                    A Legacy of
+                  </span>
+                  <span className="font-serif-italic italic block text-[#CCA855] mt-1 sm:mt-2">
+                    Uncompromising Artistry
+                  </span>
+                </h1>
 
-                    {/* Gradient Blends to melt seamlessly into obsidian background */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0B] via-transparent to-transparent opacity-70 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0B] via-transparent to-transparent opacity-70 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0B]/40 via-transparent to-transparent opacity-50 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-l from-[#0B0B0B]/30 via-transparent to-transparent pointer-events-none" />
-                  </div>
-                </div>
+                {/* Paragraph Copy */}
+                <p className="text-xs sm:text-sm lg:text-[15px] text-[#A8A49C] leading-relaxed font-light max-w-xl">
+                  Born from the rich traditions of Pakistani leatherwork, The Spartan Leather
+                  represents the pinnacle of handcrafted excellence. We don&apos;t just
+                  manufacture goods; we preserve a heritage of durability, luxury, and
+                  meticulous precision that spans generations.
+                </p>
               </div>
             </div>
           </div>
