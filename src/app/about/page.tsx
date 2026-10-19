@@ -175,11 +175,11 @@ export default function AboutPage() {
                 with our artisans for a custom creation tailored to your legacy.
               </p>
 
-              {/* Action Buttons */}
+              {/* Action Buttons: Gold Gradient SHOP COLLECTION & Green INQUIRE VIA WHATSAPP */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                 <Link
                   href="/shop"
-                  className="btn-spartan w-full sm:w-auto px-8 sm:px-9 py-3.5 sm:py-4 bg-[#8C6D2B] hover:bg-[#A38135] text-[#0C0B0A] font-bold text-xs uppercase tracking-[0.2em] shadow-[0_6px_20px_rgba(140,109,43,0.35)] transition-all cursor-pointer"
+                  className="btn-spartan inline-flex items-center justify-center w-full sm:w-auto px-8 sm:px-9 py-3.5 sm:py-4 bg-gradient-to-r from-[#C29B38] to-[#E0C681] text-[#1A1918] font-bold text-xs sm:text-[13px] uppercase tracking-[0.22em] shadow-[0_8px_25px_rgba(194,155,56,0.3)] hover:brightness-105 transition-all cursor-pointer"
                 >
                   SHOP COLLECTION
                 </Link>
@@ -188,9 +188,16 @@ export default function AboutPage() {
                   href={customOrderWhatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-spartan w-full sm:w-auto px-8 sm:px-9 py-3.5 sm:py-4 border border-[#7A5C22] bg-[#141312]/80 text-[#CCA855] hover:border-[#CCA855] hover:text-[#E0C681] hover:bg-[#1A1918] font-bold text-xs uppercase tracking-[0.2em] transition-all cursor-pointer"
+                  className="btn-spartan inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-8 py-3.5 sm:px-9 sm:py-4 rounded-md sm:rounded-lg bg-[#25D366] text-white font-bold text-xs sm:text-[13px] uppercase tracking-[0.18em] shadow-[0_8px_25px_rgba(37,211,102,0.3)] hover:bg-[#20bd5a] hover:shadow-[0_12px_32px_rgba(37,211,102,0.45)] transition-all cursor-pointer"
                 >
-                  CUSTOM ORDER
+                  <svg
+                    className="w-5 h-5 fill-current flex-shrink-0"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.54 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44s-.56-1.36-.77-1.86c-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29" />
+                  </svg>
+                  <span>INQUIRE VIA WHATSAPP</span>
                 </a>
               </div>
             </div>
