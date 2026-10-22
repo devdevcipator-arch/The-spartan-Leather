@@ -298,7 +298,7 @@ export default function ShopPage() {
                   className="group flex flex-col justify-between border border-[#7A5C22]/35 bg-[#141312] overflow-hidden transition-all duration-300 hover:border-[#C29B38]/80 hover:shadow-[0_12px_35px_rgba(0,0,0,0.85)]"
                 >
                   {/* Image Container with Badges */}
-                  <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full overflow-hidden bg-[#0F0E0D]">
+                  <div className="relative aspect-[4/5] sm:aspect-square md:max-h-[420px] lg:aspect-[4/5] w-full overflow-hidden bg-[#0F0E0D]">
                     <Image
                       src={product.image}
                       alt={product.name}
