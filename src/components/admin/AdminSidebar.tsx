@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Lock, LogOut } from "lucide-react";
+import BrandCrest from "@/components/BrandCrest";
 
 const NAV_ITEMS = [
   { name: "Products", href: "/admin", Icon: Lock },
@@ -15,13 +16,14 @@ const NAV_ITEMS = [
 export default function AdminSidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden h-screen w-[248px] flex-col border-r border-[#7A5C22] bg-[#1A1918] lg:flex">
-      {/* Brand lockup */}
-      <div className="flex h-[112px] shrink-0 flex-col justify-center border-b border-[#372D1B] px-8">
-        <span className="font-serif text-[20px] uppercase leading-none tracking-[0.15em] text-[#C29B38] select-none">
-          Spartan
+      {/* Brand lockup — same crest and typography as the main platform header */}
+      <div className="flex h-[136px] shrink-0 flex-col items-center justify-center border-b border-[#372D1B] px-8 text-center">
+        <BrandCrest size={44} className="h-11 w-11 object-contain" />
+        <span className="mt-[10px] font-serif text-[15px] font-bold uppercase leading-none tracking-[0.18em] text-[#E0C681] select-none">
+          The Spartan Leather
         </span>
-        <span className="mt-[13px] text-[10px] uppercase leading-none tracking-[0.05em] text-[#C29B38]/50 select-none">
-          The Leather Atelier
+        <span className="mt-[6px] text-[8px] font-medium uppercase leading-none tracking-[0.3em] text-[#C29B38]/50 select-none">
+          Master Artisans
         </span>
       </div>
 
