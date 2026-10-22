@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ChevronDown, CloudUpload, X } from "lucide-react";
+import { ChevronDown, CloudUpload, Trash, X } from "lucide-react";
 import { CATEGORIES, type Product } from "./product-types";
 
 const statLabelClasses =
@@ -21,7 +21,8 @@ interface EditProductModalProps {
 /**
  * "EDIT PRODUCT" modal dialog — mirrors the NEW PRODUCT design exactly, with
  * edit-mode working: fields pre-fill from the selected product and the
- * dropzone previews the current visual which new assets replace.
+ * dropzone previews the current visual which new assets replace, plus a
+ * remove control that marks the visual for deletion.
  *
  * Front-end only: submissions close the dialog — no inventory state or API
  * is wired yet.
@@ -35,6 +36,7 @@ export default function EditProductModal({
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [visuals, setVisuals] = useState<File[]>([]);
+  const [visualRemoved, setVisualRemoved] = useState(false);
   const visualInputRef = useRef<HTMLInputElement>(null);
 
   // Pre-fill the draft from the product being edited whenever the dialog opens.
@@ -44,6 +46,7 @@ export default function EditProductModal({
     setCategory(product.category);
     setDescription(product.description ?? "");
     setVisuals([]);
+    setVisualRemoved(false);
   }, [open, product]);
 
   // Close on Escape while open.
@@ -63,6 +66,7 @@ export default function EditProductModal({
     setCategory("");
     setDescription("");
     setVisuals([]);
+    setVisualRemoved(false);
   }, [open]);
 
   if (!open || !product) return null;
@@ -169,23 +173,37 @@ export default function EditProductModal({
               <span className={statLabelClasses}>Product Visuals</span>
 
               {/* Current visual preview (edit-mode) */}
-              <div className="flex items-center gap-3 rounded-[3px] border border-[#242019] bg-[#141210] px-3 py-2">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 shrink-0 border border-[#372D1B] object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[11px] leading-none text-[#E5DFD3]">
-                    {currentVisualName}
-                  </p>
-                  <p className="mt-[4px] text-[10px] uppercase leading-none tracking-[0.08em] text-[#66635E] select-none">
-                    Current visual — replace via upload below
-                  </p>
+              {visualRemoved ? (
+                <p className="rounded-[3px] border border-dashed border-[#4A3D22] bg-[#141210] px-3 py-[11px] text-[10px] uppercase leading-none tracking-[0.08em] text-[#66635E] select-none">
+                  Visual removed — save to apply, or upload a replacement
+                </p>
+              ) : (
+                <div className="flex items-center gap-3 rounded-[3px] border border-[#242019] bg-[#141210] px-3 py-2">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={44}
+                    height={44}
+                    className="h-11 w-11 shrink-0 border border-[#372D1B] object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[11px] leading-none text-[#E5DFD3]">
+                      {currentVisualName}
+                    </p>
+                    <p className="mt-[4px] text-[10px] uppercase leading-none tracking-[0.08em] text-[#66635E] select-none">
+                      Current visual
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Remove current visual"
+                    onClick={() => setVisualRemoved(true)}
+                    className="flex h-[26px] w-[26px] shrink-0 cursor-pointer items-center justify-center rounded text-[#66635E] transition-colors hover:bg-[#242019] hover:text-[#C29B38]"
+                  >
+                    <Trash aria-hidden="true" className="h-[13px] w-[13px]" />
+                  </button>
                 </div>
-              </div>
+              )}
 
               <button
                 type="button"
