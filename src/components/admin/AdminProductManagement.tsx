@@ -92,11 +92,11 @@ export default function AdminProductManagement() {
         <div className="flex items-center gap-3">
           <BrandCrest size={32} className="h-8 w-8 object-contain" />
           <div className="flex flex-col">
-            <span className="font-serif text-[16px] uppercase leading-none tracking-[0.13em] text-[#C29B38] select-none">
-              Spartan
+            <span className="font-serif text-[15px] font-bold uppercase leading-none tracking-[0.18em] text-[#E0C681] select-none">
+              The Spartan Leather
             </span>
-            <span className="mt-[5px] text-[8px] uppercase leading-none tracking-[0.05em] text-[#C29B38]/50 select-none">
-              The Leather Atelier
+            <span className="mt-[5px] text-[8px] font-medium uppercase leading-none tracking-[0.3em] text-[#C29B38]/50 select-none">
+              Master Artisans
             </span>
           </div>
         </div>
