@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Lock, LogOut, Plus, SquarePen, Trash, UserPlus } from "lucide-react";
 import BrandCrest from "@/components/BrandCrest";
+import NewProductModal from "@/components/admin/NewProductModal";
 
 /**
  * Column proportions for the product grid, measured from the reference at
@@ -70,6 +71,7 @@ const statLabelClasses =
  */
 export default function AdminProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [newProductOpen, setNewProductOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -163,12 +165,18 @@ export default function AdminProductManagement() {
           </button>
           <button
             type="button"
+            onClick={() => setNewProductOpen(true)}
             className="inline-flex h-[44px] w-full shrink-0 cursor-pointer items-center justify-center gap-[14px] whitespace-nowrap bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-6 text-[12px] font-bold tracking-[0.02em] text-[#141210] uppercase transition-opacity hover:opacity-90 xl:w-[236px]"
           >
             <Plus aria-hidden="true" className="h-[13px] w-[13px] shrink-0" />
             <span>Add New Product</span>
           </button>
         </div>
+
+        <NewProductModal
+          open={newProductOpen}
+          onClose={() => setNewProductOpen(false)}
+        />
 
         {/* Product table */}
         <section className="mt-[33px] overflow-hidden border border-[#372D1B] bg-[#1A1918]">
