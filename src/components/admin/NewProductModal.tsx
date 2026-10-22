@@ -174,7 +174,7 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
                   </span>
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.12em] text-[#66635E] select-none">
-                  PNG or JPG — up to 10MB each
+                  PNG, JPG up to 10MB
                 </span>
               </button>
               <input
@@ -207,20 +207,20 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
           {/* Divider between form and footer actions */}
           <div className="border-t border-[#372D1B]" />
 
-          {/* Footer actions */}
-          <div className="flex items-center justify-end gap-3 px-8 py-5">
+          {/* Footer actions — Cancel left-aligned, Save Product right-aligned */}
+          <div className="flex items-center justify-between px-8 py-5">
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-[#372D1B] px-6 text-[12px] font-bold uppercase tracking-[0.08em] text-[#CFCABF] transition-colors hover:border-[#C29B38]/50 hover:text-[#E0C681]"
+              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-[#372D1B] bg-[#141210] px-6 text-[12px] font-bold uppercase tracking-[0.08em] text-[#CFCABF] transition-colors hover:border-[#C29B38]/50 hover:text-[#E0C681]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="inline-flex h-[44px] cursor-pointer items-center justify-center bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90"
+              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90"
             >
-              Add Product
+              Save Product
             </button>
           </div>
         </form>

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Lock, LogOut, Plus, SquarePen, Trash, UserPlus } from "lucide-react";
 import BrandCrest from "@/components/BrandCrest";
 import NewProductModal from "@/components/admin/NewProductModal";
+import EditProductModal from "@/components/admin/EditProductModal";
+import type { Product } from "./product-types";
 
 /**
  * Column proportions for the product grid, measured from the reference at
@@ -21,20 +23,13 @@ const STATS = [
   { label: "Total Value", value: "$67K", unit: "Current Stock" },
 ];
 
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  image: string;
-}
-
 const PRODUCTS: Product[] = [
   {
     id: "sp-001-blk",
     name: "Spartan Elite Biker",
     sku: "SP-001-BLK",
     category: "Leather Jackets",
+    description: "Full-grain cowhide biker jacket with reinforced shoulders.",
     image: "/images/shop/jacket.jpg",
   },
   {
@@ -42,6 +37,7 @@ const PRODUCTS: Product[] = [
     name: "Atelier Equine Saddle",
     sku: "SP-EQ-042",
     category: "Horse Riding Equipment",
+    description: "Hand-stitched English saddle in vegetable-tanned leather.",
     image: "/images/shop/saddle.jpg",
   },
   {
@@ -49,6 +45,7 @@ const PRODUCTS: Product[] = [
     name: "Executive Briefcase",
     sku: "SP-ACC-98",
     category: "Accessories",
+    description: "Structured briefcase in pebbled leather with brass fittings.",
     image: "/images/shop/duffle.jpg",
   },
   {
@@ -56,6 +53,7 @@ const PRODUCTS: Product[] = [
     name: "Heritage Riding Gloves",
     sku: "SP-EQ-102",
     category: "Horse Riding Equipment",
+    description: "Deerskin riding gloves with suede grip panels.",
     image: "/images/shop/gloves.jpg",
   },
 ];
@@ -72,6 +70,7 @@ const statLabelClasses =
 export default function AdminProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newProductOpen, setNewProductOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const filteredProducts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -178,6 +177,12 @@ export default function AdminProductManagement() {
           onClose={() => setNewProductOpen(false)}
         />
 
+        <EditProductModal
+          open={editingProduct !== null}
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+        />
+
         {/* Product table */}
         <section className="mt-[33px] overflow-hidden border border-[#372D1B] bg-[#1A1918]">
           <div className="overflow-x-auto">
@@ -236,6 +241,7 @@ export default function AdminProductManagement() {
                       <button
                         type="button"
                         aria-label={`Edit ${product.name}`}
+                        onClick={() => setEditingProduct(product)}
                         className="flex cursor-pointer items-center justify-center rounded p-[3px] text-[#C29B38] transition-colors hover:bg-[#242019] hover:text-[#E0C681]"
                       >
                         <SquarePen
