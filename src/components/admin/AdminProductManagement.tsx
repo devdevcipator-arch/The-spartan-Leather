@@ -95,9 +95,6 @@ export default function AdminProductManagement() {
             <span className="font-serif text-[15px] font-bold uppercase leading-none tracking-[0.18em] text-[#E0C681] select-none">
               The Spartan Leather
             </span>
-            <span className="mt-[5px] text-[8px] font-medium uppercase leading-none tracking-[0.3em] text-[#C29B38]/50 select-none">
-              Master Artisans
-            </span>
           </div>
         </div>
         <button

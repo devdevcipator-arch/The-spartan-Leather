@@ -22,9 +22,6 @@ export default function AdminSidebar() {
         <span className="mt-[10px] font-serif text-[15px] font-bold uppercase leading-none tracking-[0.18em] text-[#E0C681] select-none">
           The Spartan Leather
         </span>
-        <span className="mt-[6px] text-[8px] font-medium uppercase leading-none tracking-[0.3em] text-[#C29B38]/50 select-none">
-          Master Artisans
-        </span>
       </div>
 
       {/* Navigation */}

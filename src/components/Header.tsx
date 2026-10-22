@@ -41,9 +41,6 @@ export default function Header({ activePath = "/" }: HeaderProps) {
             <span className="font-serif text-base sm:text-lg lg:text-xl font-bold uppercase tracking-[0.18em] sm:tracking-[0.22em] text-[#E0C681] leading-tight transition-colors duration-200 group-hover:text-[#F3DE9E]">
               The Spartan Leather
             </span>
-            <span className="text-[9px] sm:text-[10px] uppercase font-medium tracking-[0.32em] sm:tracking-[0.36em] text-[#C29B38]/85 mt-0.5">
-              Master Artisans
-            </span>
           </div>
         </Link>
 
