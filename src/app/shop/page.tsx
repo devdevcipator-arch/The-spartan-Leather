@@ -222,9 +222,9 @@ export default function ShopPage() {
                     />
                   </button>
 
-                  {/* Dropdown Menu of Remaining Categories with Fluid Animation */}
+                  {/* Dropdown Menu of Remaining Categories with Fluid Animation — anchored right so it never overflows the viewport; scrollable list with fully hidden scrollbar */}
                   {dropdownOpen && (
-                    <div className="animate-spartan-dropdown absolute left-0 sm:left-auto sm:right-0 top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312] py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
+                    <div className="animate-spartan-dropdown no-scrollbar absolute right-0 left-auto top-full mt-2.5 w-56 sm:w-60 max-w-[calc(100vw-3rem)] rounded-2xl border border-[#7A5C22]/60 bg-[#141312] py-2 px-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_20px_rgba(194,155,56,0.12)] z-50 backdrop-blur-md">
                       <div className="px-3 py-1.5 flex items-center justify-between border-b border-[#7A5C22]/25 mb-1">
                         <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C29B38]">
                           More Categories
@@ -233,7 +233,7 @@ export default function ShopPage() {
                           3 Items
                         </span>
                       </div>
-                      <div className="space-y-1">
+                      <div className="no-scrollbar space-y-1 max-h-72 overflow-y-auto">
                         {remainingCategories.map((category, idx) => {
                           const isSelected = selectedCategory === category;
                           return (
