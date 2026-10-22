@@ -170,10 +170,15 @@ export default function ShopPage() {
           </div>
 
           {/* Filter Pills Enclosure & Search Bar Container (Categories on Left, Search Bar on Right) */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 sm:gap-6 mb-10 sm:mb-14 w-full max-w-full relative z-30">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
             {/* 3 Displayed Categories + More Categories Dropdown Capsule (Left side) */}
-            <div className="w-full md:w-auto flex-shrink-0 flex justify-start py-1 relative z-30 overflow-visible">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] max-w-full overflow-visible">
+            <div className="w-full lg:w-auto flex-shrink-0 flex justify-start py-1 relative z-30 min-w-0">
+              {/* Mobile: horizontally scrollable chip row with hidden scrollbar; overflow opens up while the dropdown is showing so it never gets clipped */}
+              <div
+                className={`inline-flex items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] max-w-full ${
+                  dropdownOpen ? "overflow-visible" : "overflow-x-auto no-scrollbar"
+                }`}
+              >
                 {/* 3 Displayed Category Pills */}
                 {displayedCategories.map((category) => {
                   const isActive = selectedCategory === category;
@@ -260,9 +265,9 @@ export default function ShopPage() {
               </div>
             </div>
 
-            {/* Matching Search Capsule (Right side, stretched) */}
-            <div className="w-full md:flex-1 flex justify-start md:justify-end min-w-0">
-              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full">
+            {/* Matching Search Capsule (Right side on wide screens, centered on its own row below the categories on tablets/mobile) */}
+            <div className="w-full lg:flex-1 flex justify-start md:justify-center lg:justify-end min-w-0">
+              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full md:min-w-[180px] md:max-w-sm">
                 <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
                 <input
                   type="text"
