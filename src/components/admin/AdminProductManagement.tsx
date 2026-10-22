@@ -11,7 +11,7 @@ import BrandCrest from "@/components/BrandCrest";
  * `fr` so they scale with the viewport while holding the exact ratios.
  */
 const GRID_COL_CLASSES =
-  "grid grid-cols-[159fr_286fr_309fr_174fr_101fr] items-center";
+  "grid grid-cols-[159fr_286fr_309fr_174fr] items-center";
 
 const STATS = [
   { label: "Total Inventory", value: "124", unit: "Active Products" },
@@ -25,7 +25,6 @@ interface Product {
   name: string;
   sku: string;
   category: string;
-  price: number;
   image: string;
 }
 
@@ -35,7 +34,6 @@ const PRODUCTS: Product[] = [
     name: "Spartan Elite Biker",
     sku: "SP-001-BLK",
     category: "Leather Jackets",
-    price: 1295,
     image: "/images/shop/jacket.jpg",
   },
   {
@@ -43,7 +41,6 @@ const PRODUCTS: Product[] = [
     name: "Atelier Equine Saddle",
     sku: "SP-EQ-042",
     category: "Horse Riding Equipment",
-    price: 3450,
     image: "/images/shop/saddle.jpg",
   },
   {
@@ -51,7 +48,6 @@ const PRODUCTS: Product[] = [
     name: "Executive Briefcase",
     sku: "SP-ACC-98",
     category: "Accessories",
-    price: 850,
     image: "/images/shop/duffle.jpg",
   },
   {
@@ -59,17 +55,9 @@ const PRODUCTS: Product[] = [
     name: "Heritage Riding Gloves",
     sku: "SP-EQ-102",
     category: "Horse Riding Equipment",
-    price: 145,
     image: "/images/shop/gloves.jpg",
   },
 ];
-
-function formatPrice(price: number): string {
-  return `$${price.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
 
 const statLabelClasses =
   "text-[10px] font-semibold uppercase leading-none tracking-[0.08em] text-[#A08132] select-none";
@@ -185,12 +173,12 @@ export default function AdminProductManagement() {
         {/* Product table */}
         <section className="mt-[33px] overflow-hidden border border-[#372D1B] bg-[#1A1918]">
           <div className="overflow-x-auto">
-            <div className="min-w-[880px]">
+            <div className="min-w-[760px]">
               {/* Column headers spanning full table width */}
               <div
                 className={`${GRID_COL_CLASSES} h-[55px] border-b border-[#372D1B] px-[41px]`}
               >
-                {["Image", "Product Name", "Category", "Price"].map((label) => (
+                {["Image", "Product Name", "Category"].map((label) => (
                   <span key={label} className={statLabelClasses}>
                     {label}
                   </span>
@@ -233,11 +221,6 @@ export default function AdminProductManagement() {
                     {/* Category chip */}
                     <span className="inline-flex w-fit items-center rounded-full bg-[#2B2A28] px-[13px] py-[4px] text-[10px] font-medium tracking-[0.05em] text-[#9B978F] uppercase select-none">
                       {product.category}
-                    </span>
-
-                    {/* Price */}
-                    <span className="text-[14px] font-semibold text-[#C29B38] select-none">
-                      {formatPrice(product.price)}
                     </span>
 
                     {/* Row actions */}
