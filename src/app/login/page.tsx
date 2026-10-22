@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Mail, KeyRound, Eye, EyeOff, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import BrandCrest from "@/components/BrandCrest";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -78,27 +79,13 @@ export default function LoginPage() {
       {/* Centered Luxury Atelier Login Card */}
       <div className="relative z-10 w-full max-w-[500px] rounded-lg border border-[#7A5C22]/45 bg-[#171615]/95 backdrop-blur-md px-7 sm:px-11 py-9 sm:py-12 shadow-[0_25px_70px_rgba(0,0,0,0.95),_0_0_50px_rgba(194,155,56,0.06)] ring-1 ring-white/5">
         
-        {/* Card Header: Atelier Lock / Key Emblem */}
+        {/* Card Header: Brand Crest Emblem */}
         <div className="flex flex-col items-center text-center">
           <div className="relative flex items-center justify-center mb-4">
-            <div className="w-11 h-11 flex items-center justify-center text-[#CCA855] drop-shadow-[0_0_12px_rgba(204,168,85,0.35)]">
-              <svg 
-                className="w-10 h-10" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect x="9" y="1.5" width="6" height="4" rx="1.5" fill="#CCA855" fillOpacity="0.85" />
-                <rect x="3.5" y="4.5" width="17" height="17" rx="3" fill="#CCA855" />
-                <circle cx="12" cy="11.5" r="2.8" fill="#171615" />
-                <path 
-                  d="M7 18.5C7 16 9.2 15 12 15C14.8 15 17 16 17 18.5" 
-                  stroke="#171615" 
-                  strokeWidth="2.2" 
-                  strokeLinecap="round" 
-                />
-              </svg>
-            </div>
+            <BrandCrest
+              size={48}
+              className="w-12 h-12 object-contain drop-shadow-[0_0_12px_rgba(204,168,85,0.35)] select-none"
+            />
           </div>
 
           {/* Main Title */}

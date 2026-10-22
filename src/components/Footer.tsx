@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { MapPin, Phone, Mail, Shield } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
+import BrandCrest from "@/components/BrandCrest";
 
 interface FooterProps {
   activePath?: string;
@@ -25,9 +26,10 @@ export default function Footer({ activePath = "/" }: FooterProps) {
           <div className="md:col-span-5 space-y-6">
             {/* Logo Lockup */}
             <Link href="/" className="inline-flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-full border border-[#C29B38] bg-[#141312] flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:border-[#E0C681]">
-                <Shield className="w-4 h-4 text-[#E0C681]" />
-              </div>
+              <BrandCrest
+                size={36}
+                className="w-9 h-9 object-contain transition-transform duration-300 group-hover:scale-105 select-none"
+              />
               <span className="font-serif text-base sm:text-lg font-bold uppercase tracking-[0.2em] text-[#E0C681] group-hover:text-[#F3DE9E] transition-colors">
                 Spartan Leather
               </span>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import BrandCrest from "@/components/BrandCrest";
 
 interface HeaderProps {
   activePath?: string;
@@ -27,10 +28,12 @@ export default function Header({ activePath = "/" }: HeaderProps) {
           className="group flex items-center gap-3.5 sm:gap-4 select-none"
         >
           {/* Circular Badge Emblem */}
-          <div className="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full border-[1.5px] border-[#C29B38] bg-[#141312] shadow-[0_0_15px_rgba(194,155,56,0.12)] transition-transform duration-300 group-hover:scale-105 group-hover:border-[#E0C681] group-hover:shadow-[0_0_20px_rgba(224,198,129,0.25)]">
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#E0C681] tracking-normal leading-none select-none">
-              S
-            </span>
+          <div className="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-105">
+            <BrandCrest
+              size={48}
+              preload
+              className="w-full h-full object-contain select-none"
+            />
           </div>
 
           {/* Brand Typography */}
