@@ -20,8 +20,6 @@ const GRID_COL_CLASSES =
 const STATS = [
   { label: "Total Inventory", value: "124", unit: "Active Products" },
   { label: "New Stock", value: "18", unit: "Last 7 Days" },
-  { label: "Avg. Price", value: "$542", unit: "USD" },
-  { label: "Total Value", value: "$67K", unit: "Current Stock" },
 ];
 
 const PRODUCTS: Product[] = [
@@ -119,7 +117,7 @@ export default function AdminProductManagement() {
       {/* Content */}
       <div className="px-10 pb-16 pt-[40px]">
         {/* Inventory summary */}
-        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {STATS.map((stat) => (
             <div
               key={stat.label}
