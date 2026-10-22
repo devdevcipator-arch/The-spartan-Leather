@@ -6,6 +6,7 @@ import { Lock, LogOut, Plus, SquarePen, Trash, UserPlus } from "lucide-react";
 import BrandCrest from "@/components/BrandCrest";
 import NewProductModal from "@/components/admin/NewProductModal";
 import EditProductModal from "@/components/admin/EditProductModal";
+import ManageCategoriesModal from "@/components/admin/ManageCategoriesModal";
 import type { Product } from "./product-types";
 
 /**
@@ -71,6 +72,7 @@ export default function AdminProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newProductOpen, setNewProductOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -157,6 +159,7 @@ export default function AdminProductManagement() {
           </label>
           <button
             type="button"
+            onClick={() => setManageCategoriesOpen(true)}
             className="inline-flex h-[44px] w-full shrink-0 cursor-pointer items-center justify-center gap-[14px] whitespace-nowrap bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-6 text-[13px] font-bold tracking-[0.08em] text-[#141210] uppercase transition-opacity hover:opacity-90 xl:w-[262px]"
           >
             <SquarePen aria-hidden="true" className="h-[17px] w-[17px] shrink-0" />
@@ -181,6 +184,11 @@ export default function AdminProductManagement() {
           open={editingProduct !== null}
           product={editingProduct}
           onClose={() => setEditingProduct(null)}
+        />
+
+        <ManageCategoriesModal
+          open={manageCategoriesOpen}
+          onClose={() => setManageCategoriesOpen(false)}
         />
 
         {/* Product table */}
