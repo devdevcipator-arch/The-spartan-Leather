@@ -200,6 +200,8 @@ export default function AdminProductManagement() {
           onClose={() => setManageCategoriesOpen(false)}
           categories={categories}
           onChange={setCategories}
+          products={products}
+          onRename={() => void refresh()}
         />
 
         {/* Product table */}
