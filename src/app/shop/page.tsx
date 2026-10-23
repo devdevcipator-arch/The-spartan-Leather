@@ -169,8 +169,8 @@ export default function ShopPage() {
 
           {/* Filter Pills Enclosure & Search Bar Container (Categories on Left, Search Bar on Right) */}
           <div className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
-            {/* Category Filter Row — single unified row; chips swipe horizontally on small screens with the native scrollbar fully hidden; the More Categories anchor sits OUTSIDE the scroll track so the absolutely-positioned dropdown is never clipped by overflow-x */}
-            <div className="no-scrollbar w-full lg:w-auto flex items-center flex-nowrap gap-2 relative z-30 min-w-0 max-w-full">
+            {/* Category Filter Row — desktop: chips + More Categories on one line; narrow screens: chips on top line, More Categories wraps to its own dedicated line below (flex-wrap), search stays full-width beneath */}
+            <div className="no-scrollbar w-full lg:w-auto flex flex-wrap lg:flex-nowrap items-center gap-2 relative z-30 min-w-0 max-w-full">
               {/* Scrollable chips track — overflow-x: auto, white-space: nowrap, scrollbar completely hidden */}
               <div className="no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex items-center flex-nowrap gap-2 overflow-x-auto min-w-0 flex-1 lg:flex-none py-0.5">
                 {/* 3 Displayed Category Pills — individually bordered so no outer capsule border can break or clip */}
@@ -196,8 +196,8 @@ export default function ShopPage() {
                 })}
               </div>
 
-                {/* More Categories Dropdown Button — outside the overflow track so the dropdown is never clipped */}
-                <div className="flex-shrink-0 relative" ref={dropdownRef}>
+                {/* More Categories Dropdown Button — wraps onto its own dedicated line on narrow screens (w-full), inline beside chips on desktop (lg:w-auto); kept OUTSIDE the overflow track so the dropdown is never clipped */}
+                <div className="w-full lg:w-auto flex-shrink-0 relative" ref={dropdownRef}>
                   <button
                     type="button"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
