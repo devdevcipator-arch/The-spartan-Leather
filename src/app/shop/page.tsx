@@ -159,7 +159,7 @@ export default function ShopPage() {
       {/* Header with activePath set to shop */}
       <Header activePath="/shop" />
 
-      <main className="flex-1 w-full px-6 sm:px-8 md:px-[48px] py-12 sm:py-16">
+      <main className="flex-1 w-full px-6 sm:px-8 md:px-[48px] py-12 sm:py-16 overflow-x-clip">
         <SectionReveal>
           {/* Page Title */}
           <div className="text-center mb-10 sm:mb-12">
@@ -170,12 +170,12 @@ export default function ShopPage() {
           </div>
 
           {/* Filter Pills Enclosure & Search Bar Container (Categories on Left, Search Bar on Right) */}
-          <div className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
-            {/* 3 Displayed Categories + More Categories Dropdown Capsule (Left side) */}
-            <div className="no-scrollbar w-full lg:w-auto flex-shrink-0 flex justify-start py-1 relative z-30 min-w-0">
-              {/* Chips wrap onto the next line instead of horizontal scrolling — permanently overflow-visible so the dropdown is never clipped. rounded-[26px] clamps to a pill when single-row, relaxes to a clean rounded-rect when chips wrap. Generous padding on all sides so wrapped rows never touch the border */}
-              <div className="inline-flex max-w-full flex-wrap items-center gap-2 sm:gap-2.5 whitespace-nowrap rounded-[26px] border border-[#7A5C22]/55 bg-[#121110] px-3.5 py-2 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-visible">
-                {/* 3 Displayed Category Pills */}
+          <div className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
+            {/* Category Filter Row — single unified row; chips swipe horizontally on small screens with the native scrollbar fully hidden; the More Categories anchor sits OUTSIDE the scroll track so the absolutely-positioned dropdown is never clipped by overflow-x */}
+            <div className="no-scrollbar w-full lg:w-auto flex items-center flex-nowrap gap-2 relative z-30 min-w-0 max-w-full">
+              {/* Scrollable chips track — overflow-x: auto, white-space: nowrap, scrollbar completely hidden */}
+              <div className="no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex items-center flex-nowrap gap-2 overflow-x-auto min-w-0 flex-1 lg:flex-none py-0.5">
+                {/* 3 Displayed Category Pills — individually bordered so no outer capsule border can break or clip */}
                 {displayedCategories.map((category) => {
                   const isActive = selectedCategory === category;
                   return (
@@ -186,9 +186,9 @@ export default function ShopPage() {
                         setSelectedCategory(category);
                         setDropdownOpen(false);
                       }}
-                      className={`whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                      className={`flex-shrink-0 whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
                         isActive
-                          ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                          ? "border border-transparent bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
                           : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
                       }`}
                     >
@@ -196,15 +196,16 @@ export default function ShopPage() {
                     </button>
                   );
                 })}
+              </div>
 
-                {/* More Categories Dropdown Button */}
-                <div className="no-scrollbar relative" ref={dropdownRef}>
+                {/* More Categories Dropdown Button — outside the overflow track so the dropdown is never clipped */}
+                <div className="flex-shrink-0 relative" ref={dropdownRef}>
                   <button
                     type="button"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className={`whitespace-nowrap flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
+                    className={`flex-shrink-0 whitespace-nowrap flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all duration-200 cursor-pointer ${
                       isRemainingCategorySelected
-                        ? "bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
+                        ? "border border-transparent bg-[#C29B38] text-[#121110] font-semibold shadow-[0_0_14px_rgba(194,155,56,0.35)]"
                         : "border border-[#7A5C22]/45 bg-[#161514]/70 text-[#E5DFD3] hover:border-[#C29B38] hover:text-[#E0C681]"
                     }`}
                   >
@@ -258,12 +259,11 @@ export default function ShopPage() {
                     </div>
                   )}
                 </div>
-              </div>
             </div>
 
             {/* Matching Search Capsule (Right side on wide screens, centered on its own row below the categories on tablets/mobile) */}
             <div className="w-full lg:flex-1 flex justify-start md:justify-center lg:justify-end min-w-0">
-              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full md:min-w-[180px] md:max-w-sm">
+              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full md:min-w-[240px] md:max-w-xs">
                 <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
                 <input
                   type="text"
