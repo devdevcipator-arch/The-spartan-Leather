@@ -173,8 +173,8 @@ export default function ShopPage() {
           <div className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
             {/* 3 Displayed Categories + More Categories Dropdown Capsule (Left side) */}
             <div className="no-scrollbar w-full lg:w-auto flex-shrink-0 flex justify-start py-1 relative z-30 min-w-0">
-              {/* Chips wrap onto the next line instead of horizontal scrolling — permanently overflow-visible so the dropdown is never clipped */}
-              <div className="inline-flex max-w-full flex-wrap items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full border border-[#7A5C22]/55 bg-[#121110] p-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-visible">
+              {/* Chips wrap onto the next line instead of horizontal scrolling — permanently overflow-visible so the dropdown is never clipped. rounded-[26px] clamps to a pill when single-row, relaxes to a clean rounded-rect when chips wrap */}
+              <div className="inline-flex max-w-full flex-wrap items-center gap-x-1.5 gap-y-1.5 sm:gap-x-2 sm:gap-y-2 whitespace-nowrap rounded-[26px] border border-[#7A5C22]/55 bg-[#121110] px-2.5 py-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-visible">
                 {/* 3 Displayed Category Pills */}
                 {displayedCategories.map((category) => {
                   const isActive = selectedCategory === category;
