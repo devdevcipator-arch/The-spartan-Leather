@@ -5,16 +5,96 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SectionReveal from "@/components/ui/SectionReveal";
+import BrandCrest from "@/components/BrandCrest";
 import { Search, ChevronDown, Check } from "lucide-react";
+import { fetchProducts } from "@/lib/catalog";
 
 interface Product {
   id: string;
   name: string;
   category: string;
-  badge?: "BEST SELLER" | "LIMITED EDITION";
+  badge?: string;
   description: string;
   image: string;
 }
+
+const FIXTURE_CATALOGUE: Product[] = [
+  {
+    id: "spartan-vanguard-jacket",
+    name: "SPARTAN VANGUARD JACKET",
+    category: "Leather Jackets",
+    badge: "BEST SELLER",
+    description:
+      "Hand-burnished full-grain cowhide leather with reinforced double stitching.",
+    image: "/images/shop/jacket.jpg",
+  },
+  {
+    id: "the-odyssey-duffle",
+    name: "THE ODYSSEY DUFFLE",
+    category: "Leather Bags",
+    badge: "LIMITED EDITION",
+    description:
+      "Spacious, rugged, and refined. Designed for the modern-day conqueror.",
+    image: "/images/shop/duffle.jpg",
+  },
+  {
+    id: "centurion-saddle-leather-belt",
+    name: "CENTURION SADDLE BELT",
+    category: "Leather Belts",
+    badge: "LIMITED EDITION",
+    description:
+      "Full-grain vegetable-tanned steerhide fitted with an antiqued solid brass Spartan crest buckle.",
+    image: "/images/shop/belt.jpg",
+  },
+  {
+    id: "craftsman-armor-apron",
+    name: "CRAFTSMAN ARMOR APRON",
+    category: "Leather Aprons",
+    description:
+      "Maximum protection and utility for professional artisans and metalworkers.",
+    image: "/images/shop/apron.jpg",
+  },
+  {
+    id: "royal-equestrian-saddle",
+    name: "ROYAL EQUESTRIAN SADDLE",
+    category: "Equestrian & Saddlery",
+    description:
+      "Engineered for comfort and control. The pinnacle of horse riding equipment.",
+    image: "/images/shop/saddle.jpg",
+  },
+  {
+    id: "phalanx-bifold-wallet",
+    name: "PHALANX BIFOLD WALLET",
+    category: "Leather Wallets",
+    description:
+      "Slim silhouette, maximum security. Crafted from premium Italian calfskin.",
+    image: "/images/shop/wallet.jpg",
+  },
+  {
+    id: "goliath-work-gloves",
+    name: "GOLIATH WORK GLOVES",
+    category: "Leather Gloves",
+    description:
+      "Double-reinforced palms and heat-resistant thread for extreme durability.",
+    image: "/images/shop/gloves.jpg",
+  },
+  {
+    id: "ares-tactical-vest",
+    name: "ARES REINFORCED VEST",
+    category: "Vests & Armor",
+    description:
+      "Heavy-gauge tactical cowhide vest with reinforced dual-stitch panels and concealed carry pockets.",
+    image: "/images/shop/jacket.jpg",
+  },
+  {
+    id: "artisan-spartan-tool-roll",
+    name: "SPARTAN ARTISAN ROLL",
+    category: "Small Accessories",
+    description:
+      "Dedicated full-grain roll-up tool case engineered for master craftsmen, mechanics, and barbers.",
+    image: "/images/shop/wallet.jpg",
+  },
+];
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -22,6 +102,8 @@ export default function ShopPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  /** The catalogue: platform fixtures first, DB rows once the table is seeded. */
+  const [products, setProducts] = useState<Product[]>(FIXTURE_CATALOGUE);
   // Category pills shown inline on the filter bar
   const displayedCategories = [
     "All",
@@ -45,83 +127,28 @@ export default function ShopPage() {
     };
   }, []);
 
-  const products: Product[] = [
-    {
-      id: "spartan-vanguard-jacket",
-      name: "SPARTAN VANGUARD JACKET",
-      category: "Leather Jackets",
-      badge: "BEST SELLER",
-      description:
-        "Hand-burnished full-grain cowhide leather with reinforced double stitching.",
-      image: "/images/shop/jacket.jpg",
-    },
-    {
-      id: "the-odyssey-duffle",
-      name: "THE ODYSSEY DUFFLE",
-      category: "Leather Bags",
-      badge: "LIMITED EDITION",
-      description:
-        "Spacious, rugged, and refined. Designed for the modern-day conqueror.",
-      image: "/images/shop/duffle.jpg",
-    },
-    {
-      id: "centurion-saddle-leather-belt",
-      name: "CENTURION SADDLE BELT",
-      category: "Leather Belts",
-      badge: "LIMITED EDITION",
-      description:
-        "Full-grain vegetable-tanned steerhide fitted with an antiqued solid brass Spartan crest buckle.",
-      image: "/images/shop/belt.jpg",
-    },
-    {
-      id: "craftsman-armor-apron",
-      name: "CRAFTSMAN ARMOR APRON",
-      category: "Leather Aprons",
-      description:
-        "Maximum protection and utility for professional artisans and metalworkers.",
-      image: "/images/shop/apron.jpg",
-    },
-    {
-      id: "royal-equestrian-saddle",
-      name: "ROYAL EQUESTRIAN SADDLE",
-      category: "Equestrian & Saddlery",
-      description:
-        "Engineered for comfort and control. The pinnacle of horse riding equipment.",
-      image: "/images/shop/saddle.jpg",
-    },
-    {
-      id: "phalanx-bifold-wallet",
-      name: "PHALANX BIFOLD WALLET",
-      category: "Leather Wallets",
-      description:
-        "Slim silhouette, maximum security. Crafted from premium Italian calfskin.",
-      image: "/images/shop/wallet.jpg",
-    },
-    {
-      id: "goliath-work-gloves",
-      name: "GOLIATH WORK GLOVES",
-      category: "Leather Gloves",
-      description:
-        "Double-reinforced palms and heat-resistant thread for extreme durability.",
-      image: "/images/shop/gloves.jpg",
-    },
-    {
-      id: "ares-tactical-vest",
-      name: "ARES REINFORCED VEST",
-      category: "Vests & Armor",
-      description:
-        "Heavy-gauge tactical cowhide vest with reinforced dual-stitch panels and concealed carry pockets.",
-      image: "/images/shop/jacket.jpg",
-    },
-    {
-      id: "artisan-spartan-tool-roll",
-      name: "SPARTAN ARTISAN ROLL",
-      category: "Small Accessories",
-      description:
-        "Dedicated full-grain roll-up tool case engineered for master craftsmen, mechanics, and barbers.",
-      image: "/images/shop/wallet.jpg",
-    },
-  ];
+  // Live wiring: replace the on-platform fixture catalogue with the database
+  // catalogue once the products table has rows (until the schema/seed script
+  // is applied the storefront keeps rendering exactly what it always did).
+  useEffect(() => {
+    let cancelled = false;
+    fetchProducts().then(({ products: dbProducts, failed }) => {
+      if (cancelled || failed || dbProducts.length === 0) return;
+      setProducts(
+        dbProducts.map((p) => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          badge: p.badge ?? undefined,
+          description: p.description ?? "",
+          image: p.image,
+        })),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Every product category not shown inline rides in the More Categories dropdown (Leather Bags, Leather Wallets, Leather Belts, Leather Aprons, etc.)
   const remainingCategories = [
@@ -299,13 +326,19 @@ export default function ShopPage() {
                 >
                   {/* Image Container with Badges */}
                   <div className="relative aspect-[4/5] sm:aspect-square md:aspect-[3/4] lg:aspect-[4/5] md:max-h-[420px] lg:max-h-[380px] w-full overflow-hidden bg-[#0F0E0D]">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
-                    />
+                    {product.image ? (
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <BrandCrest size={64} className="h-16 w-16 object-contain opacity-50" />
+                      </div>
+                    )}
 
                     {/* Top-Left Badge */}
                     {product.badge && (

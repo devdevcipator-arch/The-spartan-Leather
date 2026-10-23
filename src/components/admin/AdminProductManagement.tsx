@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { Lock, LogOut, Plus, SquarePen, Trash, UserPlus } from "lucide-react";
+import { Loader2, Lock, LogOut, Plus, SquarePen, Trash, UserPlus } from "lucide-react";
 import BrandCrest from "@/components/BrandCrest";
 import NewProductModal from "@/components/admin/NewProductModal";
 import EditProductModal from "@/components/admin/EditProductModal";
 import ManageCategoriesModal from "@/components/admin/ManageCategoriesModal";
-import type { Product } from "./product-types";
+import { supabase } from "@/lib/supabase";
+import { fetchCategories, fetchProducts } from "@/lib/catalog";
+import { CATEGORIES, type Product } from "./product-types";
 
 /**
  * Column proportions for the product grid, measured from the reference at
@@ -17,54 +19,16 @@ import type { Product } from "./product-types";
 const GRID_COL_CLASSES =
   "grid grid-cols-[159fr_286fr_309fr_174fr] items-center";
 
-const STATS = [
-  { label: "Total Inventory", value: "124", unit: "Active Products" },
-  { label: "New Stock", value: "18", unit: "Last 7 Days" },
-];
-
-const PRODUCTS: Product[] = [
-  {
-    id: "sp-001-blk",
-    name: "Spartan Elite Biker",
-    sku: "SP-001-BLK",
-    category: "Leather Jackets",
-    description: "Full-grain cowhide biker jacket with reinforced shoulders.",
-    image: "/images/shop/jacket.jpg",
-  },
-  {
-    id: "sp-eq-042",
-    name: "Atelier Equine Saddle",
-    sku: "SP-EQ-042",
-    category: "Horse Riding Equipment",
-    description: "Hand-stitched English saddle in vegetable-tanned leather.",
-    image: "/images/shop/saddle.jpg",
-  },
-  {
-    id: "sp-acc-98",
-    name: "Executive Briefcase",
-    sku: "SP-ACC-98",
-    category: "Accessories",
-    description: "Structured briefcase in pebbled leather with brass fittings.",
-    image: "/images/shop/duffle.jpg",
-  },
-  {
-    id: "sp-eq-102",
-    name: "Heritage Riding Gloves",
-    sku: "SP-EQ-102",
-    category: "Horse Riding Equipment",
-    description: "Deerskin riding gloves with suede grip panels.",
-    image: "/images/shop/gloves.jpg",
-  },
-];
-
 const statLabelClasses =
   "text-[10px] font-semibold uppercase leading-none tracking-[0.08em] text-[#A08132] select-none";
 
 /**
  * Products management view.
  *
- * Front-end only: the catalogue below is a local fixture so the screen can be
- * reviewed and styled without wiring inventory state or an API.
+ * Live wiring: the catalogue is read from the `products` table; adding,
+ * editing and deleting persist to the database. Category management is
+ * shared with the product popups. The stat cards reflect the real counts
+ * from the table.
  */
 export default function AdminProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,16 +36,55 @@ export default function AdminProductManagement() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
 
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([...CATEGORIES]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    const [productResult, categoryResult] = await Promise.all([
+      fetchProducts(),
+      fetchCategories(),
+    ]);
+    if (!categoryResult.failed) setCategories(categoryResult.categories);
+    setProducts(productResult.products);
+    setLoading(false);
+  }, []);
+
+  // Load the catalogue on mount.
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  const handleDelete = async (product: Product) => {
+    setDeletingId(product.id);
+    const { error } = await supabase.from("products").delete().eq("id", product.id);
+    if (!error) {
+      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+    } else {
+      // Surface failures through the popups' shared banner style
+      console.error("Failed to delete product:", error.message);
+    }
+    setDeletingId(null);
+  };
+
   const filteredProducts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return PRODUCTS;
-    return PRODUCTS.filter(
+    if (!q) return products;
+    return products.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
-        p.sku.toLowerCase().includes(q) ||
+        p.sku?.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q),
     );
-  }, [searchQuery]);
+  }, [searchQuery, products]);
+
+  // Real stats derived from the catalogue (previously hardcoded placeholders)
+  const totalInventory = products.length;
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const newStock = products.filter(
+    (p) => p.created_at && new Date(p.created_at).getTime() >= weekAgo,
+  ).length;
 
   return (
     <main className="min-w-0 flex-1 lg:ml-[248px]">
@@ -116,24 +119,26 @@ export default function AdminProductManagement() {
 
       {/* Content */}
       <div className="px-10 pb-16 pt-[40px]">
-        {/* Inventory summary */}
+        {/* Inventory summary — live counts from the products table */}
         <section className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="border border-[#372D1B] bg-[#1A1918] px-[26px] pb-[28px] pt-[27px]"
-            >
-              <span className={statLabelClasses}>{stat.label}</span>
-              <div className="mt-[6px] flex items-baseline gap-[14px]">
-                <span className="text-[40px] leading-none text-[#E5DFD3] lining-nums select-none [font-family:var(--font-cormorant)]">
-                  {stat.value}
-                </span>
-                <span className="text-[12px] text-[#6B6863] select-none">
-                  {stat.unit}
-                </span>
-              </div>
+          <div className="border border-[#372D1B] bg-[#1A1918] px-[26px] pb-[28px] pt-[27px]">
+            <span className={statLabelClasses}>Total Inventory</span>
+            <div className="mt-[6px] flex items-baseline gap-[14px]">
+              <span className="text-[40px] leading-none text-[#E5DFD3] lining-nums select-none [font-family:var(--font-cormorant)]">
+                {loading ? "—" : totalInventory}
+              </span>
+              <span className="text-[12px] text-[#6B6863] select-none">Active Products</span>
             </div>
-          ))}
+          </div>
+          <div className="border border-[#372D1B] bg-[#1A1918] px-[26px] pb-[28px] pt-[27px]">
+            <span className={statLabelClasses}>New Stock</span>
+            <div className="mt-[6px] flex items-baseline gap-[14px]">
+              <span className="text-[40px] leading-none text-[#E5DFD3] lining-nums select-none [font-family:var(--font-cormorant)]">
+                {loading ? "—" : newStock}
+              </span>
+              <span className="text-[12px] text-[#6B6863] select-none">Last 7 Days</span>
+            </div>
+          </div>
         </section>
 
         {/* Collection search & catalogue actions */}
@@ -173,17 +178,28 @@ export default function AdminProductManagement() {
         <NewProductModal
           open={newProductOpen}
           onClose={() => setNewProductOpen(false)}
+          categories={categories}
+          onCreate={() => {
+            setNewProductOpen(false);
+            void refresh();
+          }}
         />
 
         <EditProductModal
           open={editingProduct !== null}
           product={editingProduct}
           onClose={() => setEditingProduct(null)}
+          categories={categories}
+          onSave={() => {
+            void refresh();
+          }}
         />
 
         <ManageCategoriesModal
           open={manageCategoriesOpen}
           onClose={() => setManageCategoriesOpen(false)}
+          categories={categories}
+          onChange={setCategories}
         />
 
         {/* Product table */}
@@ -205,9 +221,16 @@ export default function AdminProductManagement() {
               </div>
 
               {/* Rows */}
-              {filteredProducts.length === 0 ? (
+              {loading ? (
                 <div className="py-16 text-center text-[13px] text-[#66635E]">
-                  No products match that search.
+                  <Loader2 aria-hidden="true" className="mx-auto mb-3 h-6 w-6 animate-spin text-[#C29B38]" />
+                  Loading the product collection...
+                </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="py-16 text-center text-[13px] text-[#66635E]">
+                  {products.length === 0
+                    ? "No products in the collection yet. Use Add New Product to begin."
+                    : "No products match that search."}
                 </div>
               ) : (
                 filteredProducts.map((product) => (
@@ -216,22 +239,30 @@ export default function AdminProductManagement() {
                     className={`${GRID_COL_CLASSES} border-b border-[#242019] py-[18px] pl-[41px] pr-[41px] transition-colors last:border-b-0 hover:bg-[#201E1A]`}
                   >
                     {/* Thumbnail */}
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      width={60}
-                      height={60}
-                      className="h-[60px] w-[60px] object-cover"
-                    />
+                    {product.image ? (
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={60}
+                        height={60}
+                        className="h-[60px] w-[60px] object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-[60px] w-[60px] items-center justify-center border border-[#372D1B] bg-[#242019]">
+                        <BrandCrest size={28} className="h-7 w-7 object-contain opacity-70" />
+                      </div>
+                    )}
 
                     {/* Name + SKU */}
                     <div className="min-w-0">
                       <p className="truncate text-[15px] font-semibold leading-tight text-[#E5DFD3] select-none">
                         {product.name}
                       </p>
-                      <p className="mt-[2px] truncate text-[10px] leading-none text-[#66635E] select-none">
-                        SKU: {product.sku}
-                      </p>
+                      {product.sku && (
+                        <p className="mt-[2px] truncate text-[10px] leading-none text-[#66635E] select-none">
+                          SKU: {product.sku}
+                        </p>
+                      )}
                     </div>
 
                     {/* Category chip */}
@@ -256,13 +287,22 @@ export default function AdminProductManagement() {
                       <button
                         type="button"
                         aria-label={`Delete ${product.name}`}
-                        className="flex cursor-pointer items-center justify-center rounded p-[3px] text-[#C29B38] transition-colors hover:bg-[#242019] hover:text-[#E0C681]"
+                        onClick={() => void handleDelete(product)}
+                        disabled={deletingId !== null}
+                        className="flex cursor-pointer items-center justify-center rounded p-[3px] text-[#C29B38] transition-colors hover:bg-[#242019] hover:text-[#E0C681] disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <Trash
-                          aria-hidden="true"
-                          className="h-4 w-4"
-                          strokeWidth={2}
-                        />
+                        {deletingId === product.id ? (
+                          <Loader2
+                            aria-hidden="true"
+                            className="h-4 w-4 animate-spin"
+                          />
+                        ) : (
+                          <Trash
+                            aria-hidden="true"
+                            className="h-4 w-4"
+                            strokeWidth={2}
+                          />
+                        )}
                       </button>
                     </div>
                   </div>

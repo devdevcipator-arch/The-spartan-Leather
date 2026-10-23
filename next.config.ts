@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
   experimental: {
     agentUpgrade: "security",
   },
+  // Product visuals uploaded through the admin dashboard are served from
+  // Supabase Storage public URLs; allow next/image to optimize them.
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "vpditkpshterzmqkqpwj.supabase.co",
+        pathname: "/storage/v1/object/public/product-visuals/**",
+      },
+    ],
+  },
   turbopack: {
     rules: {
       "*.css": {

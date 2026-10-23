@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { SquarePen, Trash, X } from "lucide-react";
+import { AlertCircle, Loader2, SquarePen, Trash, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const labelClasses =
   "text-[10px] font-semibold uppercase leading-none tracking-[0.08em] text-[#66635E] select-none";
@@ -15,62 +16,89 @@ const inputClasses =
 interface ManageCategoriesModalProps {
   open: boolean;
   onClose: () => void;
+  /** Current category list (owned by the admin view). */
+  categories: string[];
+  /** Called with the updated category list after a successful add/remove. */
+  onChange: (categories: string[]) => void;
 }
 
 /**
  * "MANAGE CATEGORIES" modal dialog.
  *
- * Front-end only: adding and removing categories operates on local state —
- * no inventory state or API is wired yet.
+ * Adding and removing categories now persists to the database, with the list
+ * passed in (and surfaced via onChange) by the admin view so the product
+ * popups stay in sync.
  */
 export default function ManageCategoriesModal({
   open,
   onClose,
+  categories,
+  onChange,
 }: ManageCategoriesModalProps) {
-  const [categories, setCategories] = useState<string[]>([
-    "Leather Jackets",
-    "Leather Gloves",
-    "Leather Bags",
-    "Leather Wallets",
-    "Leather Belts",
-    "Leather Aprons",
-  ]);
   const [newCategory, setNewCategory] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Close on Escape while open.
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape" && !adding) onClose();
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
+  }, [open, onClose, adding]);
 
   // Reset the draft whenever the dialog closes.
   useEffect(() => {
     if (open) return;
     setNewCategory("");
+    setErrorMsg(null);
+    setAdding(false);
   }, [open]);
 
   if (!open) return null;
 
-  const handleAdd = (event: React.FormEvent) => {
+  const handleAdd = async (event: React.FormEvent) => {
     event.preventDefault();
+    setErrorMsg(null);
+
     const name = newCategory.trim();
     if (!name) return;
     if (categories.some((c) => c.toLowerCase() === name.toLowerCase())) {
       setNewCategory("");
       return;
     }
-    setCategories((prev) => [...prev, name]);
-    setNewCategory("");
-    // TODO: wire to inventory state / API.
+
+    setAdding(true);
+    try {
+      const { error } = await supabase.from("categories").insert({ name });
+      if (error) {
+        setErrorMsg(error.message);
+      } else {
+        onChange([...categories, name]);
+        setNewCategory("");
+      }
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : "Unexpected error. Please try again.");
+    } finally {
+      setAdding(false);
+    }
   };
 
-  const handleRemove = (name: string) => {
-    setCategories((prev) => prev.filter((c) => c !== name));
-    // TODO: wire to inventory state / API.
+  const handleRemove = async (name: string) => {
+    setErrorMsg(null);
+    // Optimistic removal, matching the previous instant local-state behavior;
+    // reverted on failure.
+    const previous = categories;
+    onChange(categories.filter((c) => c !== name));
+    const { error } = await supabase.from("categories").delete().eq("name", name);
+    if (error) {
+      onChange(previous);
+      setErrorMsg(
+        `Could not delete "${name}". ${error.message}`,
+      );
+    }
   };
 
   return (
@@ -114,6 +142,12 @@ export default function ManageCategoriesModal({
           {/* Add new category */}
           <div className="space-y-[11px]">
             <p className={SECTION_LABEL}>Add New Category</p>
+            {errorMsg && (
+              <div className="flex items-start gap-2.5 p-3 rounded bg-red-950/40 border border-red-800/50 text-red-300 text-xs tracking-wide">
+                <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-400" />
+                <span className="flex-1 leading-snug">{errorMsg}</span>
+              </div>
+            )}
             <form onSubmit={handleAdd} className="flex items-center gap-3">
               <input
                 type="text"
@@ -121,13 +155,16 @@ export default function ManageCategoriesModal({
                 onChange={(e) => setNewCategory(e.target.value)}
                 placeholder="e.g. Leather Vests"
                 aria-label="New category name"
+                disabled={adding}
                 className={inputClasses}
               />
               <button
                 type="submit"
-                className="inline-flex h-[46px] shrink-0 cursor-pointer items-center justify-center rounded-[4px] bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90"
+                disabled={adding}
+                className="inline-flex h-[46px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[4px] bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Add
+                {adding && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
+                <span>{adding ? "Adding..." : "Add"}</span>
               </button>
             </form>
           </div>
@@ -198,7 +235,7 @@ export default function ManageCategoriesModal({
             type="button"
             className="cursor-pointer text-[11px] font-bold uppercase tracking-[0.1em] text-[#C29B38] transition-colors hover:text-[#E0C681] select-none"
           >
-            View All Categories (14)
+            View All Categories ({categories.length})
           </button>
         </div>
       </div>

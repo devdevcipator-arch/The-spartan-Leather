@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown, CloudUpload, X } from "lucide-react";
+import { AlertCircle, ChevronDown, CloudUpload, Loader2, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { uploadVisuals } from "@/lib/catalog";
+import { mapDbProduct, type Product } from "./product-types";
 
 const statLabelClasses =
   "text-[10px] font-semibold uppercase leading-none tracking-[0.08em] text-[#A08132] select-none";
@@ -12,53 +15,109 @@ const inputClasses =
 interface NewProductModalProps {
   open: boolean;
   onClose: () => void;
+  /** Category options shown in the dropdown (owned by the admin view). */
+  categories: string[];
+  /** Called with the saved product after a successful insert. */
+  onCreate: (product: Product) => void;
 }
 
 /**
  * "NEW PRODUCT" modal dialog.
  *
- * Front-end only: submissions reset the form and close the dialog — no
- * inventory state or API is wired yet.
+ * Field set is exactly the existing design: name, category, description,
+ * visuals. On "Save Product" the visuals upload to storage and the product
+ * row is inserted — then the dialog closes exactly as it did before wiring.
  */
-export default function NewProductModal({ open, onClose }: NewProductModalProps) {
+export default function NewProductModal({
+  open,
+  onClose,
+  categories,
+  onCreate,
+}: NewProductModalProps) {
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("Heavy Duty Gear");
   const [description, setDescription] = useState("");
   const [visuals, setVisuals] = useState<File[]>([]);
+
+  const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const visualInputRef = useRef<HTMLInputElement>(null);
 
   // Close on Escape while open.
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape" && !saving) onClose();
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
+  }, [open, onClose, saving]);
 
   // Reset the draft whenever the dialog closes.
   useEffect(() => {
     if (open) return;
     setProductName("");
-    setCategory("Heavy Duty Gear");
+    setCategory(categories[0] ?? "Heavy Duty Gear");
     setDescription("");
     setVisuals([]);
-  }, [open]);
+    setErrorMsg(null);
+    setSaving(false);
+  }, [open, categories]);
 
   if (!open) return null;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // TODO: wire to inventory state / API.
-    onClose();
-  };
+    setErrorMsg(null);
+
+    if (!productName.trim()) {
+      setErrorMsg("Please enter a product name.");
+      return;
+    }
+    if (!category.trim()) {
+      setErrorMsg("Please select a category.");
+      return;
+    }
+    // Every storefront card renders a visual, so at least one asset is needed.
+    if (visuals.length === 0) {
+      setErrorMsg("Please upload at least one product visual.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const imageUrls = await uploadVisuals(visuals);
+
+      const { data, error } = await supabase
+        .from("products")
+        .insert({
+          name: productName.trim(),
+          category: category.trim(),
+          description: description.trim(),
+          images: imageUrls,
+        })
+        .select("id, name, category, description, badge, sku, images, created_at")
+        .single();
+
+      if (error) {
+        setErrorMsg(error.message);
+      } else if (data) {
+        onCreate(mapDbProduct(data));
+        onClose();
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) setErrorMsg(err.message);
+      else setErrorMsg("Unexpected error while saving the product. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-[2px]"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget && !saving) onClose();
       }}
       role="dialog"
       aria-modal="true"
@@ -77,7 +136,8 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
             type="button"
             aria-label="Close dialog"
             onClick={onClose}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded transition-colors hover:bg-[#242019]"
+            disabled={saving}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded transition-colors hover:bg-[#242019] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <X aria-hidden="true" className="h-[18px] w-[18px] text-[#6B6863]" />
           </button>
@@ -88,6 +148,14 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-5 px-8 py-6">
+            {/* Error notification (same banner style used across the platform) */}
+            {errorMsg && (
+              <div className="flex items-start gap-2.5 p-3 rounded bg-red-950/40 border border-red-800/50 text-red-300 text-xs tracking-wide">
+                <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-400" />
+                <span className="flex-1 leading-snug">{errorMsg}</span>
+              </div>
+            )}
+
             {/* Product name */}
             <div className="space-y-[9px]">
               <label htmlFor="new-product-name" className={statLabelClasses}>
@@ -99,6 +167,7 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
                 placeholder="e.g. Spartan Vanguard Apron"
+                disabled={saving}
                 className={inputClasses}
               />
             </div>
@@ -113,17 +182,10 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
                   id="new-product-category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+                  disabled={saving}
                   className={`${inputClasses} cursor-pointer appearance-none pr-10`}
                 >
-                  {[
-                    "Heavy Duty Gear",
-                    "Leather Jackets",
-                    "Leather Gloves",
-                    "Leather Bags",
-                    "Leather Wallets",
-                    "Leather Aprons",
-                    "Accessories",
-                  ].map((option) => (
+                  {categories.map((option) => (
                     <option key={option} value={option} className="bg-[#1A1918]">
                       {option}
                     </option>
@@ -147,6 +209,7 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the craftsmanship and materials..."
+                disabled={saving}
                 className="w-full resize-none rounded-[3px] border border-[#372D1B] bg-[#141210] px-4 py-3 text-[13px] leading-relaxed text-[#E5DFD3] placeholder-[#66635E] transition-colors focus:border-[#C29B38]/60 focus:outline-none"
               />
             </div>
@@ -157,7 +220,8 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
               <button
                 type="button"
                 onClick={() => visualInputRef.current?.click()}
-                className="flex w-full cursor-pointer flex-col items-center gap-[14px] rounded-[6px] border-2 border-dashed border-[#4A3D22] bg-[#141210] px-6 py-9 text-center transition-colors hover:border-[#C29B38]/50 hover:bg-[#161514]"
+                disabled={saving}
+                className="flex w-full cursor-pointer flex-col items-center gap-[14px] rounded-[6px] border-2 border-dashed border-[#4A3D22] bg-[#141210] px-6 py-9 text-center transition-colors hover:border-[#C29B38]/50 hover:bg-[#161514] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {/* Circular icon pill */}
                 <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#372D1B] bg-[#242019]">
@@ -181,6 +245,7 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
                 ref={visualInputRef}
                 type="file"
                 multiple
+                accept="image/png,image/jpeg"
                 onChange={(e) =>
                   setVisuals(e.target.files ? Array.from(e.target.files) : [])
                 }
@@ -212,15 +277,18 @@ export default function NewProductModal({ open, onClose }: NewProductModalProps)
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-[#372D1B] bg-[#141210] px-6 text-[12px] font-bold uppercase tracking-[0.08em] text-[#CFCABF] transition-colors hover:border-[#C29B38]/50 hover:text-[#E0C681]"
+              disabled={saving}
+              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] border border-[#372D1B] bg-[#141210] px-6 text-[12px] font-bold uppercase tracking-[0.08em] text-[#CFCABF] transition-colors hover:border-[#C29B38]/50 hover:text-[#E0C681] disabled:cursor-not-allowed disabled:opacity-60"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="inline-flex h-[44px] cursor-pointer items-center justify-center rounded-[3px] bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90"
+              disabled={saving}
+              className="inline-flex h-[44px] cursor-pointer items-center justify-center gap-2 rounded-[3px] bg-[radial-gradient(ellipse_at_center,#E7C771_0%,#D5B255_92%)] px-7 text-[12px] font-bold uppercase tracking-[0.08em] text-[#141210] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Save Product
+              {saving && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
+              <span>{saving ? "Saving Product..." : "Save Product"}</span>
             </button>
           </div>
         </form>
