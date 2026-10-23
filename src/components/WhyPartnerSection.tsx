@@ -75,6 +75,7 @@ export default function WhyPartnerSection() {
           return (
             <div
               key={item.id}
+              data-reveal
               className="group flex flex-col items-center text-center select-none"
             >
               {/* Circular Icon Emblem */}

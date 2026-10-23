@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 interface SectionRevealProps {
   children: React.ReactNode;
@@ -9,47 +7,22 @@ interface SectionRevealProps {
   withDivider?: boolean;
 }
 
+/**
+ * Marks a page section for the scroll-triggered reveal animation
+ * (blur / fade / slide-up). Detection, staggering, and cleanup are
+ * handled globally by <RevealObserver /> mounted in the root layout.
+ */
 export default function SectionReveal({
   children,
   className = "",
   id,
   withDivider = false,
 }: SectionRevealProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const currentRef = sectionRef.current;
-    if (!currentRef) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Once revealed, unobserve to maintain clean performance
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "0px 0px -50px 0px",
-      }
-    );
-
-    observer.observe(currentRef);
-
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       id={id}
-      className={`relative w-full spartan-section-reveal ${
-        isVisible ? "is-visible" : ""
-      } ${className}`}
+      data-reveal
+      className={`relative w-full ${className}`}
     >
       {/* Optional Subtle Luxury Gold Horizon Divider between sections */}
       {withDivider && (

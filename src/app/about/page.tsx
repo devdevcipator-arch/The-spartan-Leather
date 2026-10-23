@@ -120,6 +120,7 @@ export default function AboutPage() {
                 return (
                   <div
                     key={pillar.title}
+                    data-reveal
                     className="group border border-[#7A5C22]/35 bg-[#141312] p-7 sm:p-8 flex flex-col justify-start transition-all duration-300 hover:border-[#C29B38]/80 hover:-translate-y-1 hover:shadow-[0_16px_35px_rgba(0,0,0,0.85)]"
                   >
                     {/* Gold Circular Icon Container */}

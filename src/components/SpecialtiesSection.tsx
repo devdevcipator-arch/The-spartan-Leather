@@ -121,6 +121,7 @@ export default function SpecialtiesSection() {
           <Link
             key={item.id}
             href={item.href}
+            data-reveal
             className="group relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] overflow-hidden border border-[#7A5C22]/35 bg-[#141312] transition-all duration-300 hover:border-[#C29B38]/80 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
           >
             {/* Background Image */}
@@ -154,6 +155,7 @@ export default function SpecialtiesSection() {
           <Link
             key={item.id}
             href={item.href}
+            data-reveal
             className="group flex flex-col justify-between p-5 sm:p-6 border border-[#2B2A28] bg-[#141312] transition-all duration-300 hover:border-[#7A5C22] hover:bg-[#1A1918] hover:shadow-[0_8px_20px_rgba(0,0,0,0.6)] min-h-[140px] sm:min-h-[155px]"
           >
             <div>

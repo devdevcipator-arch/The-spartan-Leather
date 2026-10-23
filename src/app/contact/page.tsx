@@ -56,7 +56,10 @@ export default function ContactPage() {
           </div>
 
           {/* Main 2-Column Luxury Contact Card Container */}
-          <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl md:rounded-[24px] border border-[#7A5C22]/35 bg-[#121110] shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+          <div
+            data-reveal
+            className="max-w-6xl mx-auto overflow-hidden rounded-2xl md:rounded-[24px] border border-[#7A5C22]/35 bg-[#121110] shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
               {/* Left Column: Workshop Atmosphere & Contact Information (5.5 or 6 Cols) */}
               <div className="lg:col-span-6 relative p-8 sm:p-10 lg:p-12 flex flex-col justify-between overflow-hidden">
@@ -287,6 +290,7 @@ export default function ContactPage() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
+                data-reveal
                 className="border border-[#7A5C22]/30 bg-[#141312] p-6 sm:p-8 text-center rounded-xl transition-all duration-300 hover:border-[#C29B38]/60 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(0,0,0,0.7)]"
               >
                 <div className="font-serif text-2xl sm:text-3xl lg:text-[34px] font-normal text-[#CCA855] mb-1.5 leading-none">

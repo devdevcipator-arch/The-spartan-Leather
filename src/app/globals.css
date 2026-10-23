@@ -86,25 +86,33 @@ body {
   box-shadow: 0 4px 14px rgba(194, 155, 56, 0.25);
 }
 
-/* Spartan Signature Uniform Section Reveal & Transition Animation */
-.spartan-section-reveal {
+/* Spartan Scroll-Triggered Reveal: Blur / Fade / Slide-Up Animation
+   Targeted at [data-reveal]; driven by RevealObserver.tsx which toggles
+   the `is-revealed` state and staggers siblings via --reveal-transition-delay */
+[data-reveal] {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: translateY(40px);
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.8s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-transition-delay, 0ms);
 }
 
-.spartan-section-reveal.is-visible {
+[data-reveal].is-revealed {
   opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spartan-section-reveal {
+  [data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
     transition: none !important;
+    will-change: auto !important;
   }
 }
 

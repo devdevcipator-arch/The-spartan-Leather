@@ -34,7 +34,10 @@ export default function PartnerCtaSection({
       </div>
 
       {/* Central Floating Callout Card */}
-      <div className="relative z-10 max-w-4xl mx-auto border border-[#7A5C22]/70 bg-[#161514]/95 px-6 py-12 sm:px-14 sm:py-16 text-center shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+      <div
+        data-reveal
+        className="relative z-10 max-w-4xl mx-auto border border-[#7A5C22]/70 bg-[#161514]/95 px-6 py-12 sm:px-14 sm:py-16 text-center shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
+      >
         {/* Main Headline */}
         <h2 className="font-serif text-2xl sm:text-3xl lg:text-[36px] font-bold uppercase tracking-[0.06em] text-[#E0C681] leading-tight sm:leading-[1.25]">
           Partner With The Best In Leather <br className="hidden sm:inline" />

@@ -60,6 +60,7 @@ export default function FaqSection() {
           return (
             <div
               key={faq.id}
+              data-reveal
               className={`border transition-all duration-300 ${
                 isOpen
                   ? "border-[#7A5C22] bg-[#141312] shadow-[0_4px_25px_rgba(0,0,0,0.5)]"

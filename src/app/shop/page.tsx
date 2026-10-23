@@ -294,6 +294,7 @@ export default function ShopPage() {
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
+                  data-reveal
                   className="group flex flex-col justify-between border border-[#7A5C22]/35 bg-[#141312] overflow-hidden transition-all duration-300 hover:border-[#C29B38]/80 hover:shadow-[0_12px_35px_rgba(0,0,0,0.85)]"
                 >
                   {/* Image Container with Badges */}
@@ -355,7 +356,10 @@ export default function ShopPage() {
           )}
 
           {/* Bulk Orders & B2B Partnerships Banner */}
-          <div className="relative overflow-hidden rounded-2xl md:rounded-[22px] border border-[#7A5C22]/35 bg-[#0C0B0A] px-6 py-10 sm:px-10 sm:py-12 md:px-12 md:py-14 lg:px-14 lg:py-14 mt-16 sm:mt-24 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+          <div
+            data-reveal
+            className="relative overflow-hidden rounded-2xl md:rounded-[22px] border border-[#7A5C22]/35 bg-[#0C0B0A] px-6 py-10 sm:px-10 sm:py-12 md:px-12 md:py-14 lg:px-14 lg:py-14 mt-16 sm:mt-24 shadow-[0_20px_50px_rgba(0,0,0,0.85)]"
+          >
             {/* Background Image & Gradient */}
             <div className="absolute inset-0 z-0">
               <Image
