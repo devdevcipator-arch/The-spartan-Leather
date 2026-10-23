@@ -48,9 +48,12 @@ export default function SignUpPage() {
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback`,
           data: {
             full_name: fullName.trim(),
-            role: "admin",
+            // Note: no role is set here. Roles must be assigned server-side
+            // (Supabase dashboard / database), never from the client — any
+            // visitor could otherwise self-designate as "admin".
           },
         },
       });

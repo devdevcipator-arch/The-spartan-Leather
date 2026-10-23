@@ -1,10 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
+/**
+ * Shared Supabase client for "use client" pages.
+ *
+ * Delegates to the @supabase/ssr browser client so the session is stored in
+ * cookies (readable by the server). Kept as `supabase` for compatibility with
+ * existing page imports.
+ */
+import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://vpditkpshterzmqkqpwj.supabase.co";
-const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwZGl0a3BzaHRlcnptcWtxcHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3OTkyMDksImV4cCI6MjEwNzM3NTIwOX0.T_2RjAFYUF9ygq_sVu07QbpVHWSvKLoopTtPbNyxpMU";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local.",
+  );
+}
 
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);

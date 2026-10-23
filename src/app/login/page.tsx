@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Mail, KeyRound, Eye, EyeOff, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import BrandCrest from "@/components/BrandCrest";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +16,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
+  const [nextPath, setNextPath] = useState<string | null>(null);
+
+  // Read the ?next= param set by the proxy when redirecting unauthenticated
+  // visitors to /login, and surface callback errors. Sanitized to internal
+  // paths only.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get("next");
+    if (from && from.startsWith("/") && !from.startsWith("//")) {
+      setNextPath(from);
+    }
+    if (params.get("error") === "verification") {
+      setErrorMsg(
+        "Email verification expired or failed. Please sign up again or sign in after verifying.",
+      );
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +55,10 @@ export default function LoginPage() {
         setErrorMsg(error.message);
       } else {
         setAuthenticatedUser(data.user?.email || email);
+        // Identity is confirmed; send the user straight to their
+        // destination (usually /admin when redirected by the proxy).
+        const destination = nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : null;
+        if (destination) router.push(destination);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -109,10 +132,10 @@ export default function LoginPage() {
             </p>
             <div className="pt-4">
               <Link
-                href="/shop"
+                href={nextPath || "/shop"}
                 className="btn-spartan inline-flex items-center justify-center gap-2 w-full py-3.5 rounded bg-gradient-to-r from-[#C29B38] via-[#DEBA64] to-[#C29B38] text-[#141312] font-serif font-bold text-xs uppercase tracking-[0.2em] shadow-[0_8px_25px_rgba(194,155,56,0.3)] hover:brightness-105 transition-all"
               >
-                Proceed to Atelier Shop <ArrowRight className="w-4 h-4 ml-1" />
+                {nextPath ? "Return To Admin Atelier" : "Proceed to Atelier Shop"} <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
           </div>
@@ -151,12 +174,18 @@ export default function LoginPage() {
             {/* Secure Password */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label 
-                  htmlFor="loginPassword" 
+                <label
+                  htmlFor="loginPassword"
                   className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-[#CCA855]"
                 >
                   Secure Password
                 </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-[10px] uppercase tracking-[0.12em] text-[#8E8B85] hover:text-[#E0C681] transition-colors"
+                >
+                  Forgot?
+                </Link>
               </div>
               <div className="relative flex items-center">
                 <KeyRound className="absolute left-3.5 w-4 h-4 text-[#7A756D] pointer-events-none" />
