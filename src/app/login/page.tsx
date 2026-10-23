@@ -55,10 +55,11 @@ export default function LoginPage() {
         setErrorMsg(error.message);
       } else {
         setAuthenticatedUser(data.user?.email || email);
-        // Identity is confirmed; send the user straight to their
-        // destination (usually /admin when redirected by the proxy).
-        const destination = nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : null;
-        if (destination) router.push(destination);
+        // Identity is confirmed; navigate immediately. Priority: the `next`
+        // path from the proxy redirect, otherwise the admin atelier — never
+        // the public shop, which is not the point of admin login.
+        const destination = nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/admin";
+        router.push(destination);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -132,10 +133,10 @@ export default function LoginPage() {
             </p>
             <div className="pt-4">
               <Link
-                href={nextPath || "/shop"}
+                href={nextPath || "/admin"}
                 className="btn-spartan inline-flex items-center justify-center gap-2 w-full py-3.5 rounded bg-gradient-to-r from-[#C29B38] via-[#DEBA64] to-[#C29B38] text-[#141312] font-serif font-bold text-xs uppercase tracking-[0.2em] shadow-[0_8px_25px_rgba(194,155,56,0.3)] hover:brightness-105 transition-all"
               >
-                {nextPath ? "Return To Admin Atelier" : "Proceed to Atelier Shop"} <ArrowRight className="w-4 h-4 ml-1" />
+                Proceed to Admin Atelier <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
           </div>
