@@ -22,18 +22,11 @@ export default function ShopPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Exactly 3 categories for display
+  // Category pills shown inline on the filter bar
   const displayedCategories = [
     "All",
     "Leather Jackets",
     "Leather Gloves",
-  ];
-
-  // Remaining categories shown in More Categories dropdown
-  const remainingCategories = [
-    "Leather Bags",
-    "Leather Wallets",
-    "Leather Aprons",
   ];
 
   // Close dropdown when clicking outside
@@ -129,6 +122,11 @@ export default function ShopPage() {
       image: "/images/shop/wallet.jpg",
     },
   ];
+
+  // Every product category not shown inline rides in the More Categories dropdown (Leather Bags, Leather Wallets, Leather Belts, Leather Aprons, etc.)
+  const remainingCategories = [
+    ...new Set(products.map((product) => product.category)),
+  ].filter((category) => !displayedCategories.includes(category));
 
   const isRemainingCategorySelected = remainingCategories.includes(selectedCategory);
 
@@ -227,7 +225,7 @@ export default function ShopPage() {
                           More Categories
                         </span>
                         <span className="text-[9px] uppercase tracking-[0.1em] text-[#E5DFD3]/40 font-mono">
-                          3 Items
+                          {remainingCategories.length} Items
                         </span>
                       </div>
                       <div className="no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 space-y-1 max-h-72 overflow-y-auto overscroll-contain">
@@ -263,7 +261,7 @@ export default function ShopPage() {
 
             {/* Matching Search Capsule (Right side on wide screens, centered on its own row below the categories on tablets/mobile) */}
             <div className="w-full lg:flex-1 flex justify-start md:justify-center lg:justify-end min-w-0">
-              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full md:min-w-[240px] md:max-w-xs">
+              <div className="relative flex items-center rounded-full border border-[#7A5C22]/55 bg-[#121110] px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.7)] w-full max-w-full md:min-w-[240px] md:max-w-sm">
                 <Search className="w-4 h-4 text-[#C29B38] flex-shrink-0 mr-2.5" />
                 <input
                   type="text"
@@ -299,7 +297,7 @@ export default function ShopPage() {
                   className="group flex flex-col justify-between border border-[#7A5C22]/35 bg-[#141312] overflow-hidden transition-all duration-300 hover:border-[#C29B38]/80 hover:shadow-[0_12px_35px_rgba(0,0,0,0.85)]"
                 >
                   {/* Image Container with Badges */}
-                  <div className="relative aspect-[4/5] sm:aspect-square md:max-h-[420px] lg:aspect-[4/5] w-full overflow-hidden bg-[#0F0E0D]">
+                  <div className="relative aspect-[4/5] sm:aspect-square md:aspect-[3/4] lg:aspect-[4/5] md:max-h-[420px] lg:max-h-[380px] w-full overflow-hidden bg-[#0F0E0D]">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -322,7 +320,7 @@ export default function ShopPage() {
                   </div>
 
                   {/* Product Details & Action */}
-                  <div className="p-6 flex flex-col items-center text-center flex-1 justify-between">
+                  <div className="p-6 lg:p-5 flex flex-col items-center text-center flex-1 justify-between">
                     <div>
                       <h3 className="font-serif text-base sm:text-lg font-bold uppercase tracking-[0.12em] text-[#E0C681] group-hover:text-[#F3DE9E] transition-colors">
                         {product.name}
@@ -333,7 +331,7 @@ export default function ShopPage() {
                     </div>
 
                     {/* WhatsApp CTA Button with Uniform Spartan Animation */}
-                    <div className="w-full mt-6">
+                    <div className="w-full mt-6 lg:mt-5">
                       <a
                         href={getWhatsAppLink(product.name)}
                         target="_blank"
