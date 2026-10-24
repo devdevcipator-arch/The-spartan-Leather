@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function SpecialtiesSection() {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   const mainSpecialties = [
     {
       id: "jackets",
@@ -68,55 +65,20 @@ export default function SpecialtiesSection() {
     },
   ];
 
-  const handleScroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 340;
-      scrollContainerRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
     <div className="w-full px-6 sm:px-8 md:px-[48px] py-16 sm:py-20 lg:py-24">
       {/* Section Header */}
-      <div className="flex items-end justify-between mb-8 sm:mb-12">
-        <div className="space-y-1 sm:space-y-1.5">
-          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-[0.06em] text-[#E0C681]">
-            Our Specialties
-          </h2>
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#C29B38]/85 font-medium">
-            Curated Collections for the Modern Connoisseur
-          </p>
-        </div>
-
-        {/* Carousel Navigation Arrows */}
-        <div className="flex items-center space-x-2.5">
-          <button
-            type="button"
-            onClick={() => handleScroll("left")}
-            aria-label="Scroll left"
-            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-[#7A5C22]/50 bg-[#1A1918]/60 text-[#E0C681] hover:border-[#E0C681] hover:bg-[#1A1918] transition-colors focus:outline-none"
-          >
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#E0C681]" />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleScroll("right")}
-            aria-label="Scroll right"
-            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-[#7A5C22]/50 bg-[#1A1918]/60 text-[#E0C681] hover:border-[#E0C681] hover:bg-[#1A1918] transition-colors focus:outline-none"
-          >
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#E0C681]" />
-          </button>
-        </div>
+      <div className="space-y-1 sm:space-y-1.5 mb-8 sm:mb-12">
+        <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-[0.06em] text-[#E0C681]">
+          Our Specialties
+        </h2>
+        <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#C29B38]/85 font-medium">
+          Curated Collections for the Modern Connoisseur
+        </p>
       </div>
 
       {/* Main 4 Featured Specialty Cards */}
-      <div
-        ref={scrollContainerRef}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
         {mainSpecialties.map((item) => (
           <Link
             key={item.id}
