@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, KeyRound, Eye, EyeOff, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { mapAuthError, setSessionHint } from "@/lib/auth";
 import BrandCrest from "@/components/BrandCrest";
 
 export default function LoginPage() {
@@ -52,18 +53,21 @@ export default function LoginPage() {
       });
 
       if (error) {
-        setErrorMsg(error.message);
+        setErrorMsg(mapAuthError(error.message));
       } else {
+        // Session is stored automatically by the Supabase client; set the
+        // non-sensitive hint cookie so proxy.ts doesn't bounce /dashboard.
+        setSessionHint();
         setAuthenticatedUser(data.user?.email || email);
         // Identity is confirmed; navigate immediately. Priority: the `next`
-        // path from the proxy redirect, otherwise the admin atelier — never
+        // path from the proxy redirect, otherwise the owner dashboard ΓÇö never
         // the public shop, which is not the point of admin login.
-        const destination = nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/admin";
+        const destination = nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/dashboard";
         router.push(destination);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setErrorMsg(err.message);
+        setErrorMsg(mapAuthError(err.message));
       } else {
         setErrorMsg("Authentication failed. Please verify credentials.");
       }
@@ -95,7 +99,7 @@ export default function LoginPage() {
           href="/" 
           className="group flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#7A5C22]/30 bg-[#121110]/80 backdrop-blur-md text-[11px] font-medium uppercase tracking-[0.24em] text-[#CCA855]/90 hover:text-[#E0C681] hover:border-[#CCA855]/60 hover:bg-[#1A1918] transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
         >
-          <span className="text-[#C29B38] transition-transform group-hover:-translate-x-1">←</span>
+          <span className="text-[#C29B38] transition-transform group-hover:-translate-x-1">ΓåÉ</span>
           <span>The Spartan Leather</span>
         </Link>
       </div>
@@ -133,10 +137,10 @@ export default function LoginPage() {
             </p>
             <div className="pt-4">
               <Link
-                href={nextPath || "/admin"}
+                href={nextPath || "/dashboard"}
                 className="btn-spartan inline-flex items-center justify-center gap-2 w-full py-3.5 rounded bg-gradient-to-r from-[#C29B38] via-[#DEBA64] to-[#C29B38] text-[#141312] font-serif font-bold text-xs uppercase tracking-[0.2em] shadow-[0_8px_25px_rgba(194,155,56,0.3)] hover:brightness-105 transition-all"
               >
-                Proceed to Admin Atelier <ArrowRight className="w-4 h-4 ml-1" />
+                Enter Owner Dashboard <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
           </div>
@@ -196,7 +200,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                   disabled={loading}
                   className="w-full bg-[#242321] text-[#E5DFD3] text-xs sm:text-[13px] placeholder-[#5E5A54] pl-10 pr-11 py-3.5 rounded border border-[#3A3835] focus:border-[#C29B38] focus:ring-1 focus:ring-[#C29B38]/40 focus:bg-[#2A2926] outline-none transition-all duration-200"
                 />
@@ -230,7 +234,7 @@ export default function LoginPage() {
                 ) : (
                   <>
                     <span>Authenticate & Enter</span>
-                    <span className="text-base font-normal transition-transform duration-200 group-hover:translate-x-1">→</span>
+                    <span className="text-base font-normal transition-transform duration-200 group-hover:translate-x-1">ΓåÆ</span>
                   </>
                 )}
               </button>

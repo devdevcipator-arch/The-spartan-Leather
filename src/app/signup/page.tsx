@@ -2,15 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { User, Mail, KeyRound, HelpCircle, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { mapAuthError, setSessionHint } from "@/lib/auth";
 import BrandCrest from "@/components/BrandCrest";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [successEmail, setSuccessEmail] = useState<string | null>(null);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -52,21 +56,38 @@ export default function SignUpPage() {
           data: {
             full_name: fullName.trim(),
             // Note: no role is set here. Roles must be assigned server-side
-            // (Supabase dashboard / database), never from the client — any
+            // (Supabase dashboard / database), never from the client ΓÇö any
             // visitor could otherwise self-designate as "admin".
           },
         },
       });
 
       if (error) {
-        // If Supabase returns an error, display friendly message
-        setErrorMsg(error.message);
-      } else {
-        setIsSuccess(true);
+        // If Supabase returns an error, display a friendly message
+        setErrorMsg(mapAuthError(error.message));
+        return;
       }
+
+      if (data.session) {
+        // Email confirmation is disabled / auto-confirmed:
+        // the user is signed in already (session persisted by the Supabase
+        // client) ΓÇö proceed straight into the protected dashboard.
+        setSessionHint();
+        router.replace("/dashboard");
+        return;
+      }
+
+      // Email confirmation is required: show the check-your-inbox notice
+      // and reset the form fields for a clean state.
+      setSuccessEmail(email.trim());
+      setIsSuccess(true);
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setErrorMsg(err.message);
+        setErrorMsg(mapAuthError(err.message));
       } else {
         setErrorMsg("An unexpected error occurred while requesting credentials.");
       }
@@ -98,7 +119,7 @@ export default function SignUpPage() {
           href="/" 
           className="group flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#7A5C22]/30 bg-[#121110]/80 backdrop-blur-md text-[11px] font-medium uppercase tracking-[0.24em] text-[#CCA855]/90 hover:text-[#E0C681] hover:border-[#CCA855]/60 hover:bg-[#1A1918] transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
         >
-          <span className="text-[#C29B38] transition-transform group-hover:-translate-x-1">←</span>
+          <span className="text-[#C29B38] transition-transform group-hover:-translate-x-1">ΓåÉ</span>
           <span>The Spartan Leather</span>
         </Link>
       </div>
@@ -136,7 +157,7 @@ export default function SignUpPage() {
               Credentials Requested
             </h2>
             <p className="text-xs text-[#A8A49C] leading-relaxed max-w-sm mx-auto font-light">
-              Your administrative enrollment request for <strong className="text-[#E5DFD3]">{email}</strong> has been transmitted to our master atelier. Please check your inbox to verify your credentials.
+              Your administrative enrollment request for <strong className="text-[#E5DFD3]">{successEmail}</strong> has been transmitted to our master atelier. Please check your inbox to verify your credentials before attempting secure login.
             </p>
             <div className="pt-4">
               <Link
@@ -223,7 +244,7 @@ export default function SignUpPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                   disabled={loading}
                   className="w-full bg-[#242321] text-[#E5DFD3] text-xs sm:text-[13px] placeholder-[#5E5A54] pl-10 pr-11 py-3.5 rounded border border-[#3A3835] focus:border-[#C29B38] focus:ring-1 focus:ring-[#C29B38]/40 focus:bg-[#2A2926] outline-none transition-all duration-200"
                 />
@@ -258,7 +279,7 @@ export default function SignUpPage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                   disabled={loading}
                   className="w-full bg-[#242321] text-[#E5DFD3] text-xs sm:text-[13px] placeholder-[#5E5A54] pl-10 pr-11 py-3.5 rounded border border-[#3A3835] focus:border-[#C29B38] focus:ring-1 focus:ring-[#C29B38]/40 focus:bg-[#2A2926] outline-none transition-all duration-200"
                 />
@@ -292,7 +313,7 @@ export default function SignUpPage() {
                 ) : (
                   <>
                     <span>Create Admin Account</span>
-                    <span className="text-base font-normal transition-transform duration-200 group-hover:translate-x-1">→</span>
+                    <span className="text-base font-normal transition-transform duration-200 group-hover:translate-x-1">ΓåÆ</span>
                   </>
                 )}
               </button>
