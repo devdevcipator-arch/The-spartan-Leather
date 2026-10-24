@@ -1,32 +1,56 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
 /**
- * Optimistic edge protection for /dashboard.
+ * Proxy (formerly middleware — deprecated in Next.js 16).
  *
- * The Supabase session lives in browser localStorage, so it cannot be read at
- * the edge. A small, non-sensitive hint cookie (`sl_session_hint`) is set on
- * successful signup / sign-in, allowing unauthenticated visitors to be
- * redirected to /login before hydration.
+ * Guards the admin area server-side: any request to /admin* without a valid
+ * Supabase session is redirected to /login with a `next` param so the user
+ * returns to /admin after signing in. Without this, /admin is publicly
+ * reachable by URL alone.
  *
- * The authoritative check still runs client-side in AuthGuard via
- * `supabase.auth.getUser()`, which verifies the token with Supabase.
+ * NOTE: as a compensating control, the admin page itself also verifies the
+ * session server-side (defense in depth, since proxy matchers can be bypassed
+ * by Server Function requests routed elsewhere).
  */
-const SESSION_HINT_COOKIE = "sl_session_hint";
+import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-export function proxy(request: NextRequest) {
-  if (!request.cookies.has(SESSION_HINT_COOKIE)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    // `next` preserves the originally requested protected path; sanitized
-    // to internal paths client-side in the login page.
-    url.search = `next=${encodeURIComponent(request.nextUrl.pathname)}`;
-    return NextResponse.redirect(url);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Missing Supabase environment variables for the proxy.",
+  );
+}
+
+export async function proxy(request: NextRequest) {
+  const response = NextResponse.next();
+
+  const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options),
+        );
+      },
+    },
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/admin/:path*"],
 };

@@ -2,19 +2,15 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { User, Mail, KeyRound, HelpCircle, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { mapAuthError, setSessionHint } from "@/lib/auth";
 import BrandCrest from "@/components/BrandCrest";
 
 export default function SignUpPage() {
-  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [successEmail, setSuccessEmail] = useState<string | null>(null);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -63,31 +59,14 @@ export default function SignUpPage() {
       });
 
       if (error) {
-        // If Supabase returns an error, display a friendly message
-        setErrorMsg(mapAuthError(error.message));
-        return;
+        // If Supabase returns an error, display friendly message
+        setErrorMsg(error.message);
+      } else {
+        setIsSuccess(true);
       }
-
-      if (data.session) {
-        // Email confirmation is disabled / auto-confirmed:
-        // the user is signed in already (session persisted by the Supabase
-        // client) — proceed straight into the protected dashboard.
-        setSessionHint();
-        router.replace("/dashboard");
-        return;
-      }
-
-      // Email confirmation is required: show the check-your-inbox notice
-      // and reset the form fields for a clean state.
-      setSuccessEmail(email.trim());
-      setIsSuccess(true);
-      setFullName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setErrorMsg(mapAuthError(err.message));
+        setErrorMsg(err.message);
       } else {
         setErrorMsg("An unexpected error occurred while requesting credentials.");
       }
@@ -157,7 +136,7 @@ export default function SignUpPage() {
               Credentials Requested
             </h2>
             <p className="text-xs text-[#A8A49C] leading-relaxed max-w-sm mx-auto font-light">
-              Your administrative enrollment request for <strong className="text-[#E5DFD3]">{successEmail}</strong> has been transmitted to our master atelier. Please check your inbox to verify your credentials before attempting secure login.
+              Your administrative enrollment request for <strong className="text-[#E5DFD3]">{email}</strong> has been transmitted to our master atelier. Please check your inbox to verify your credentials.
             </p>
             <div className="pt-4">
               <Link
