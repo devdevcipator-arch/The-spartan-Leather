@@ -25,7 +25,7 @@ export default function ContactPage() {
     setSubmitted(true);
   };
 
-  const whatsappInquiryUrl = `https://wa.me/923000000000?text=${encodeURIComponent(
+  const whatsappInquiryUrl = `https://wa.me/9231433512255?text=${encodeURIComponent(
     "Hello The Spartan Leather, I am interested in inquiring about Craftsmanship, B2B Collaboration, and bespoke orders."
   )}`;
 

@@ -180,12 +180,14 @@ export default function ShopPage() {
     });
   }, [selectedCategory, searchQuery, products]);
 
-  const getWhatsAppLink = (productName: string) => {
-    const text = `Hello The Spartan Leather, I am interested in inquiring about "${productName}". Please provide wholesale pricing, MOQ, and customization options.`;
-    return `https://wa.me/923000000000?text=${encodeURIComponent(text)}`;
+  const WHATSAPP_NUMBER = "9231433512255";
+
+  const getWhatsAppLink = (product: Product) => {
+    const text = `Hello The Spartan Leather, I am interested in:\n\n• Product: ${product.name}\n• Category: ${product.category}\n\nPlease provide details on pricing, availability, and customization options.`;
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   };
 
-  const b2bWhatsAppUrl = `https://wa.me/923000000000?text=${encodeURIComponent(
+  const b2bWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     "Hello The Spartan Leather, I would like to inquire about Bulk B2B Orders and corporate manufacturing partnerships."
   )}`;
 
@@ -377,7 +379,7 @@ export default function ShopPage() {
                     {/* WhatsApp CTA Button with Uniform Spartan Animation */}
                     <div className="w-full mt-6 lg:mt-5">
                       <a
-                        href={getWhatsAppLink(product.name)}
+                        href={getWhatsAppLink(product)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-spartan w-full py-3.5 bg-gradient-to-r from-[#C29B38] to-[#E0C681] text-[#1A1918] font-bold text-xs uppercase tracking-[0.22em] shadow-[0_6px_20px_rgba(194,155,56,0.3)] hover:brightness-105 flex items-center justify-center gap-2"
