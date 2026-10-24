@@ -9,7 +9,7 @@ interface PartnerCtaSectionProps {
 }
 
 export default function PartnerCtaSection({
-  whatsappNumber = "923143351255",
+  whatsappNumber = "923146827277",
   defaultMessage = "Hello The Spartan Leather, I am interested in partnering with you for custom leather goods and wholesale manufacturing.",
 }: PartnerCtaSectionProps) {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(

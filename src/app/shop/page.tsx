@@ -179,7 +179,7 @@ export default function ShopPage() {
     });
   }, [selectedCategory, searchQuery, products]);
 
-  const WHATSAPP_NUMBER = "923143351255";
+  const WHATSAPP_NUMBER = "923146827277";
 
   const getWhatsAppLink = (product: Product) => {
     const text = `Hello The Spartan Leather, I am interested in:\n\n• Product: ${product.name}\n• Category: ${product.category}\n\nPlease provide details on pricing, availability, and customization options.`;

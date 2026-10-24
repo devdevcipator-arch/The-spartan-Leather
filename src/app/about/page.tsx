@@ -36,7 +36,7 @@ export default function AboutPage() {
     },
   ];
 
-  const customOrderWhatsAppUrl = `https://wa.me/923143351255?text=${encodeURIComponent(
+  const customOrderWhatsAppUrl = `https://wa.me/923146827277?text=${encodeURIComponent(
     "Hello The Spartan Leather, I am interested in inquiring about a bespoke Custom Order with your master artisans."
   )}`;
 
