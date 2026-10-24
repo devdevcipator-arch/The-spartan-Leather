@@ -128,7 +128,7 @@ export default function Footer({ activePath = "/" }: FooterProps) {
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#C29B38] mt-0.5 flex-shrink-0" />
                 <span className="leading-snug">
-                  122 Spartan Road, Artisan District
+                  Dalowali, Jammu Road, Sialkot District, Punjab
                 </span>
               </div>
 

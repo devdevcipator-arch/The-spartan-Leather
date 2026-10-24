@@ -110,7 +110,7 @@ export default function ContactPage() {
                           Headquarters
                         </span>
                         <span className="text-xs sm:text-[13px] text-[#A8A49C] font-light">
-                          122 Spartan Road, Artisan District
+                          Dalowali, Jammu Road, Sialkot District, Punjab
                         </span>
                       </div>
                     </div>
