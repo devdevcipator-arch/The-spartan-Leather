@@ -57,7 +57,7 @@ const FIXTURE_CATALOGUE: Product[] = [
   {
     id: "royal-equestrian-saddle",
     name: "ROYAL EQUESTRIAN SADDLE",
-    category: "Equestrian & Saddlery",
+    category: "Horse Riding Equipment",
     description:
       "Engineered for comfort and control. The pinnacle of horse riding equipment.",
     image: "/images/shop/saddle.jpg",
@@ -89,7 +89,7 @@ const FIXTURE_CATALOGUE: Product[] = [
   {
     id: "artisan-spartan-tool-roll",
     name: "SPARTAN ARTISAN ROLL",
-    category: "Small Accessories",
+    category: "Accessories",
     description:
       "Dedicated full-grain roll-up tool case engineered for master craftsmen, mechanics, and barbers.",
     image: "/images/shop/wallet.jpg",

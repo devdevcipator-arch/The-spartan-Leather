@@ -20,16 +20,20 @@ export interface Product {
   created_at?: string;
 }
 
-/** Fallback category list matching the platform's existing constants. */
+/** Fallback category list — mirrors the live `categories` table after the
+ *  migration runs (Small Accessories → Accessories, Equestrian & Saddlery →
+ *  Horse Riding Equipment). Only used when the DB read fails. */
 export const CATEGORIES = [
-  "Heavy Duty Gear",
-  "Leather Jackets",
-  "Leather Gloves",
-  "Leather Bags",
-  "Leather Wallets",
-  "Leather Aprons",
-  "Horse Riding Equipment",
   "Accessories",
+  "Heavy Duty Gear",
+  "Horse Riding Equipment",
+  "Leather Aprons",
+  "Leather Bags",
+  "Leather Belts",
+  "Leather Gloves",
+  "Leather Jackets",
+  "Leather Wallets",
+  "Vests & Armor",
 ] as const;
 
 /** Map a `products` database row onto the shared Product shape. */
