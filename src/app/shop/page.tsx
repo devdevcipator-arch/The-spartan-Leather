@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import SectionReveal from "@/components/ui/SectionReveal";
 import BrandCrest from "@/components/BrandCrest";
 import { Search, ChevronDown, Check } from "lucide-react";
-import { fetchProducts } from "@/lib/catalog";
+import { fetchCategories, fetchProducts } from "@/lib/catalog";
 
 interface Product {
   id: string;
@@ -104,12 +104,14 @@ export default function ShopPage() {
 
   /** The catalogue: platform fixtures first, DB rows once the table is seeded. */
   const [products, setProducts] = useState<Product[]>(FIXTURE_CATALOGUE);
-  // Category pills shown inline on the filter bar
-  const displayedCategories = [
-    "All",
-    "Leather Jackets",
-    "Leather Gloves",
-  ];
+  /** Live category list powering the inline pills (null = DB unavailable). */
+  const [liveCategories, setLiveCategories] = useState<string[] | null>(null);
+  // Category pills shown inline on the filter bar — "All" + the first two
+  // categories from the Manage Categories table, falling back to the original
+  // hardcoded pair when the DB read fails (same safety net as the admin view).
+  const displayedCategories = liveCategories
+    ? ["All", ...liveCategories.slice(0, 2)]
+    : ["All", "Leather Jackets", "Leather Gloves"];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -144,6 +146,12 @@ export default function ShopPage() {
           image: p.image,
         })),
       );
+    });
+    // Pills mirror the admin's Manage Categories table so renames and deletes
+    // flow straight to the storefront filter bar.
+    fetchCategories().then(({ categories, failed }) => {
+      if (cancelled || failed) return;
+      setLiveCategories(categories);
     });
     return () => {
       cancelled = true;
