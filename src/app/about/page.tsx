@@ -76,18 +76,22 @@ export default function AboutPage() {
                 {/* Subtle Gold Accent Bar */}
                 <div className="w-14 h-[3.5px] bg-[#C29B38] mb-6 sm:mb-8 shadow-[0_0_12px_rgba(194,155,56,0.5)]" />
 
-                {/* Main Headline with Serif + Italic Serif in Warm Gold */}
-                <h1 className="text-4xl sm:text-5xl lg:text-[58px] xl:text-[64px] font-normal leading-[1.12] tracking-[0.02em] mb-6 sm:mb-7">
-                  <span className="font-serif block text-[#CCA855]">
+                {/* Main Headline — typography standardized to the Home hero
+                    (HeroSection.tsx): bold serif + italic Cormorant accent */}
+                <h1 className="flex flex-col select-none break-words max-w-full mb-6 sm:mb-7">
+                  <span className="font-serif font-bold text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] tracking-wide sm:tracking-[0.04em] text-[#E0C681] leading-[1.15] sm:leading-[1.08] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
                     A Legacy of
                   </span>
-                  <span className="font-serif-italic italic block text-[#CCA855] mt-1 sm:mt-2">
+                  <span
+                    style={{ fontFamily: "var(--font-cormorant), serif" }}
+                    className="italic font-normal text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] text-[#E0C681] leading-[1.15] sm:leading-[1.12] mt-1 break-words drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+                  >
                     Uncompromising Artistry
                   </span>
                 </h1>
 
-                {/* Paragraph Copy */}
-                <p className="text-xs sm:text-sm lg:text-[15px] text-[#A8A49C] leading-relaxed font-light max-w-xl">
+                {/* Paragraph Copy — body typography standardized to the Home hero */}
+                <p className="mt-6 sm:mt-8 max-w-xl text-sm sm:text-base md:text-[17px] text-[#E5DFD3]/85 leading-relaxed font-light drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]">
                   Born from the rich traditions of Pakistani leatherwork, The Spartan Leather
                   represents the pinnacle of handcrafted excellence. We don&apos;t just
                   manufacture goods; we preserve a heritage of durability, luxury, and
