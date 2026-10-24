@@ -4,7 +4,6 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SectionReveal from "@/components/ui/SectionReveal";
 import BrandCrest from "@/components/BrandCrest";
 import { Search, ChevronDown, Check } from "lucide-react";
 import { fetchCategories, fetchProducts } from "@/lib/catalog";
@@ -197,9 +196,15 @@ export default function ShopPage() {
       <Header activePath="/shop" />
 
       <main className="flex-1 w-full px-6 sm:px-8 md:px-[48px] py-12 sm:py-16 overflow-x-clip">
-        <SectionReveal>
-          {/* Page Title */}
-          <div className="text-center mb-10 sm:mb-12">
+        {/* NOTE: this page deliberately does NOT wrap everything in one
+            <SectionReveal>. A single [data-reveal] wrapper this tall can never
+            reach the 15% IntersectionObserver threshold on mobile (tall
+            single-column grid), which left the whole page permanently hidden.
+            Each block below reveals independently instead. */}
+        {/* Page Title */}
+        <div
+          data-reveal
+          className="text-center mb-10 sm:mb-12">
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-[0.1em] text-[#E0C681]">
               Our Collection
             </h1>
@@ -207,7 +212,7 @@ export default function ShopPage() {
           </div>
 
           {/* Filter Pills Enclosure & Search Bar Container (Categories on Left, Search Bar on Right) */}
-          <div className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
+          <div data-reveal className="no-scrollbar flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 lg:gap-8 mb-10 sm:mb-14 w-full max-w-full relative z-30">
             {/* Category Filter Row — desktop: chips + More Categories on one line; narrow screens: chips on top line, More Categories wraps to its own dedicated line below (flex-wrap), search stays full-width beneath */}
             <div className="no-scrollbar w-full lg:w-auto flex flex-wrap lg:flex-nowrap items-center gap-2 relative z-30 min-w-0 max-w-full">
               {/* Scrollable chips track — overflow-x: auto, white-space: nowrap, scrollbar completely hidden */}
@@ -483,7 +488,6 @@ export default function ShopPage() {
               </div>
             </div>
           </div>
-        </SectionReveal>
       </main>
 
       {/* Footer */}

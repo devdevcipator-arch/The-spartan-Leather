@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SectionReveal from "@/components/ui/SectionReveal";
 import { MapPin, Phone, Mail, CheckCircle2 } from "lucide-react";
 
 export default function ContactPage() {
@@ -42,9 +41,14 @@ export default function ContactPage() {
       <Header activePath="/contact" />
 
       <main className="flex-1 w-full px-6 sm:px-8 md:px-[48px] py-12 sm:py-16 lg:py-20">
-        <SectionReveal>
-          {/* Page Title & Intro */}
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+        {/* NOTE: this page does NOT use a single <SectionReveal> wrapper — a
+            wrapper this tall can never hit the 15% IntersectionObserver
+            threshold on mobile, hiding the entire page. Each block reveals
+            with its own [data-reveal] instead. */}
+        {/* Page Title & Intro */}
+        <div
+          data-reveal
+          className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal uppercase tracking-[0.25em] text-[#CCA855]">
               Contact Us
             </h1>
@@ -302,7 +306,6 @@ export default function ContactPage() {
               </div>
             ))}
           </div>
-        </SectionReveal>
       </main>
 
       {/* Footer with activePath set to /contact */}
