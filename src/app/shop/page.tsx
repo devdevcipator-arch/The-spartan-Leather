@@ -158,9 +158,11 @@ export default function ShopPage() {
     };
   }, []);
 
-  // Every product category not shown inline rides in the More Categories dropdown (Leather Bags, Leather Wallets, Leather Belts, Leather Aprons, etc.)
+  // Every category not shown inline rides in the More Categories dropdown —
+  // the union of the live DB categories (covers just-added labels that don't
+  // have products yet) and every category currently on a product row.
   const remainingCategories = [
-    ...new Set(products.map((product) => product.category)),
+    ...new Set([...(liveCategories ?? []), ...products.map((product) => product.category)]),
   ].filter((category) => !displayedCategories.includes(category));
 
   const isRemainingCategorySelected = remainingCategories.includes(selectedCategory);
