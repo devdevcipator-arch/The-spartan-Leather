@@ -125,10 +125,10 @@ export default function ContactPage() {
                           Direct Line
                         </span>
                         <a
-                          href="tel:+15555328437"
+                          href="tel:+923146827277"
                           className="text-xs sm:text-[13px] text-[#A8A49C] font-light hover:text-[#CCA855] transition-colors"
                         >
-                          +1 (555) LEATHER-01
+                          +92 314 6827277
                         </a>
                       </div>
                     </div>

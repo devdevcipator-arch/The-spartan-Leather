@@ -135,7 +135,7 @@ export default function Footer({ activePath = "/" }: FooterProps) {
               {/* Phone */}
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#C29B38] flex-shrink-0" />
-                <span>+1 (555) LEATHER-01</span>
+                <span>+92 314 6827277</span>
               </div>
 
               {/* Email */}
