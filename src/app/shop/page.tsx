@@ -101,8 +101,13 @@ export default function ShopPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  /** The catalogue: platform fixtures first, DB rows once the table is seeded. */
-  const [products, setProducts] = useState<Product[]>(FIXTURE_CATALOGUE);
+  /**
+   * The catalogue renders as: loading skeleton -> live DB rows once loaded
+   * (single render, no fixture swap). The on-platform fixtures are used
+   * ONLY when the database has no rows / is unreachable, so the storefront
+   * never flashes demo data before the real catalogue arrives.
+   */
+  const [products, setProducts] = useState<Product[] | null>(null);
   /** Live category list powering the inline pills (null = DB unavailable). */
   const [liveCategories, setLiveCategories] = useState<string[] | null>(null);
   // Category pills shown inline on the filter bar — "All" + the first two
@@ -128,13 +133,18 @@ export default function ShopPage() {
     };
   }, []);
 
-  // Live wiring: replace the on-platform fixture catalogue with the database
-  // catalogue once the products table has rows (until the schema/seed script
-  // is applied the storefront keeps rendering exactly what it always did).
+  // Load the catalogue once. If the products table has rows those become the
+  // grid; if it is empty (or the read fails) the shopper silently sees the
+  // original fixture catalogue. Either way it resolves in ONE render — the
+  // fixtures are never shown first and then swapped out.
   useEffect(() => {
     let cancelled = false;
     fetchProducts().then(({ products: dbProducts, failed }) => {
-      if (cancelled || failed || dbProducts.length === 0) return;
+      if (cancelled) return;
+      if (failed || dbProducts.length === 0) {
+        setProducts(FIXTURE_CATALOGUE);
+        return;
+      }
       setProducts(
         dbProducts.map((p) => ({
           id: p.id,
@@ -161,13 +171,13 @@ export default function ShopPage() {
   // the union of the live DB categories (covers just-added labels that don't
   // have products yet) and every category currently on a product row.
   const remainingCategories = [
-    ...new Set([...(liveCategories ?? []), ...products.map((product) => product.category)]),
+    ...new Set([...(liveCategories ?? []), ...(products ?? []).map((product) => product.category)]),
   ].filter((category) => !displayedCategories.includes(category));
 
   const isRemainingCategorySelected = remainingCategories.includes(selectedCategory);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
+    return (products ?? []).filter((product) => {
       const matchesCategory =
         selectedCategory === "All" || product.category === selectedCategory;
 
@@ -328,8 +338,26 @@ export default function ShopPage() {
           </div>
 
 
-          {/* Product Grid (3 Columns) */}
-          {filteredProducts.length === 0 ? (
+          {/* Product Grid (3 Columns) — skeleton placeholders while the catalogue loads,
+              so nothing is ever displayed first and swapped out mid-view */}
+          {products === null ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" aria-label="Loading collection">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse border border-[#7A5C22]/25 bg-[#141312] overflow-hidden"
+                >
+                  <div className="aspect-[4/5] sm:aspect-square md:aspect-[3/4] lg:aspect-[4/5] md:max-h-[420px] lg:max-h-[380px] w-full bg-[#1E1C1B]/80" />
+                  <div className="p-6 lg:p-5 flex flex-col items-center gap-4">
+                    <div className="h-4 w-3/4 rounded bg-[#2B2A28]" />
+                    <div className="h-3 w-full rounded bg-[#211F1E]" />
+                    <div className="h-3 w-5/6 rounded bg-[#211F1E]" />
+                    <div className="h-10 w-full rounded mt-2 bg-[#2B2A28]/70" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20 text-[#E5DFD3]/60 text-sm">
               No products found in this category. Try adjusting your search.
             </div>
