@@ -15,7 +15,6 @@ export default function Footer({ activePath = "/" }: FooterProps) {
     { name: "SHOP", href: "/shop" },
     { name: "ABOUT US", href: "/about" },
     { name: "CONTACT US", href: "/contact" },
-    { name: "ATELIER ACCESS", href: "/signup" },
   ];
 
   return (
