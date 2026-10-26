@@ -1,0 +1,1 @@
+Vercel <-> Git connection test — commit at 2026-10-26. Safe to delete.
